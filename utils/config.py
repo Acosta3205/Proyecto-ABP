@@ -1,1 +1,1 @@
-MONGO_URI = "mongodb://10.102.10.241:27017/"
+mongo_uri = "mongodb://10.102.10.241:27017/"

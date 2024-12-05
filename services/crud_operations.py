@@ -1,5 +1,5 @@
 # Importar las librerias necesarias
-from services.mongo_service import get_db
+from mongo_service import get_db
 
 mesas = [{
     "id": 1,
@@ -124,10 +124,17 @@ mesas = [{
 
 # Insertar las mesas a partir de un archivo .json
 def insertar_mesas_json(mesas):
-    """Recibe una lista de mesas y las inserta en la base de datos"""
-
+  """Recibe una lista de mesas y las inserta en la base de datos"""
+  try:
     # Obtener la base de datos
-    db = get_db()
+    db  = get_db()
 
     # Insertar las mesas desde la lista en la colección "Mesas"
     db.mesas.insert_many(mesas)
+    print("Las mesas se han insertado correctamente en la base de datos.")
+
+  except Exception as e:
+    print(f"Error al insertar las mesas en la base de datos: {e}")
+
+# Insertar las mesas
+insertar_mesas_json(mesas)
