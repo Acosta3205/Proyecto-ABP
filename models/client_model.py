@@ -5,8 +5,9 @@ from pydantic import BaseModel
 from datetime import datetime, date, time
 
 # Conexión a la base de datos
-from services import *
+from services import get_db
 
+# Definir la tabla "clientes"
 class Clientes(BaseModel):
     id: int
     nombre: str
@@ -28,5 +29,3 @@ if __name__ == "__main__":
 
         # Informar al usuario
         print("La tabla clientes se ha creado correctamente.")
-
-    

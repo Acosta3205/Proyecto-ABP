@@ -6,85 +6,135 @@ def main(page: ft.Page):
     page.title = "Restaurante Sabores Únicos"
     page.scroll = ft.ScrollMode.AUTO
     page.theme_mode = ft.ThemeMode.LIGHT
+    page.bgcolor = "#000000"
+
+    # Alineación de la página
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
 
     # Header
     header = ft.Container(
-        content=ft.Text("Restaurante Sabores Únicos", size=30, weight=ft.FontWeight.BOLD),
+        content=ft.Image(src="images/logo.png", fit=ft.ImageFit.CONTAIN),
         alignment=ft.alignment.center,
-        bgcolor=ft.colors.INDIGO_400,
-        padding=20,
     )
 
     # Welcome Section
     welcome_section = ft.Container(
         content=ft.Column(
             [
-                ft.Text("¡Bienvenidos a nuestra casa!", size=24, weight=ft.FontWeight.W_600),
+                ft.Text("¡Bienvenidos a nuestra casa!", size=24, weight=ft.FontWeight.W_600, color="#FFC061"),
                 ft.Text(
-                    "Disfruta de los mejores sabores y experiencias en nuestro restaurante. "
-                    "Te ofrecemos una selección única de platillos preparados con amor y los mejores ingredientes.",
-                    size=16,
+                    "Bienvenidos a Sabores Únicos, un restaurante donde la tradición y la creatividad se fusionan para deleitar tu paladar. Nos especializamos en ofrecer una experiencia gastronómica inolvidable con nuestros exquisitos platos de pasta, tacos llenos de sabor y postres irresistibles."
+                    "\nEn Sabores Únicos, creemos que cada comida es una oportunidad para crear momentos especiales. Nuestra carta combina recetas clásicas con toques innovadores, utilizando ingredientes frescos y de la más alta calidad. Desde pastas artesanales preparadas con pasión, hasta tacos con combinaciones únicas y postres que despiertan los sentidos, cada bocado es una celebración de los mejores sabores.",
+                    size=20,
                     text_align=ft.TextAlign.JUSTIFY,
+                    color="white",
                 ),
             ],
             spacing=15,
         ),
         padding=20,
+    )                    
+
+    # Images Section
+    
+    # Carrusel de imágenes de pasta
+    images_pasta = ft.Row(width=309 * 5, wrap=False, scroll="auto")
+    for i in range(0, 10):
+        images_pasta.controls.append(
+            ft.Image(
+                src=f"images/pasta/{i}.jpg",
+                width=300,
+                height=300,
+                fit=ft.ImageFit.COVER,
+                repeat=ft.ImageRepeat.NO_REPEAT,
+                border_radius=ft.border_radius.all(10),
+            )
+        )
+
+    # Carrusel de imágenes de tacos
+    images_tacos = ft.Row(width=309 * 5, wrap=False, scroll="auto")
+    for i in range(1, 10):
+        images_tacos.controls.append(
+            ft.Image(
+                src=f"images/tacos/taco-{i}.jpg",
+                width=300,
+                height=300,
+                fit=ft.ImageFit.COVER,
+                repeat=ft.ImageRepeat.NO_REPEAT,
+                border_radius=ft.border_radius.all(10),
+            )
+        )
+
+    # Carrusel de imágenes de postres
+    images_postres = ft.Row(width=309 * 5, wrap=False, scroll="auto")
+    for i in range(0, 9):
+        images_postres.controls.append(
+            ft.Image(
+                src=f"images/postres/{i}.jpg",
+                width=300,
+                height=300,
+                fit=ft.ImageFit.COVER,
+                repeat=ft.ImageRepeat.NO_REPEAT,
+                border_radius=ft.border_radius.all(10),
+            )
+        )
+
+    # Contenedor principal alineado al centro
+    container = ft.Column(
+        [
+            # Contenedores para los tacos
+            ft.Container(
+                content=ft.Column(
+                    [
+                        ft.Text("🌮 Tacos Especiales", weight=ft.FontWeight.W_900, size=20),
+                        images_tacos,
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                ),
+                padding=10,
+                bgcolor= "#FFC061",
+                border_radius=10,
+            ),
+
+            # Contenedores para las pastas
+            ft.Container(
+                content=ft.Column(
+                    [
+                        ft.Text("🍝 Pasta Artesanal", weight=ft.FontWeight.W_900, size=20),
+                        images_pasta,
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                ),
+                padding=10,
+                bgcolor= "#FFC061",
+                border_radius=10,
+            ),
+
+            # Contenedores para los postres
+            ft.Container(
+                content=ft.Column(
+                    [
+                        ft.Text("🍰 Postres Caseros", weight=ft.FontWeight.W_900, size=20),
+                    images_postres,
+                    ],
+                    alignment=ft.MainAxisAlignment.CENTER,
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                ),
+                padding=10,
+                bgcolor= "#FFC061",
+                border_radius=10,
+            ),
+        ],
+        spacing=20,
+        alignment=ft.MainAxisAlignment.CENTER,
+        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
-    # Sample Menu Section
-    menu_section = ft.Container(
-        content=ft.Column(
-            [
-                ft.Text("Nuestro Menú Destacado", size=24, weight=ft.FontWeight.W_600),
-                ft.Row(
-                    [
-                        ft.Container(
-                            content=ft.Column(
-                                [
-                                    ft.Text("🌮 Tacos Especiales", weight=ft.FontWeight.W_500),
-                                    ft.Text("Deliciosos tacos con una mezcla única de sabores."),
-                                ],
-                                spacing=5,
-                            ),
-                            padding=10,
-                            bgcolor=ft.colors.LIGHT_GREEN_100,
-                            border_radius=10,
-                        ),
-                        ft.Container(
-                            content=ft.Column(
-                                [
-                                    ft.Text("🍝 Pasta Artesanal", weight=ft.FontWeight.W_500),
-                                    ft.Text("Hecha a mano con nuestras recetas tradicionales."),
-                                ],
-                                spacing=5,
-                            ),
-                            padding=10,
-                            bgcolor=ft.colors.LIGHT_BLUE_100,
-                            border_radius=10,
-                        ),
-                        ft.Container(
-                            content=ft.Column(
-                                [
-                                    ft.Text("🍰 Postres Caseros", weight=ft.FontWeight.W_500),
-                                    ft.Text("Endulza tu día con nuestras deliciosas creaciones."),
-                                ],
-                                spacing=5,
-                            ),
-                            padding=10,
-                            bgcolor=ft.colors.PINK_100,
-                            border_radius=10,
-                        ),
-                    ],
-                    spacing=20,
-                    alignment=ft.MainAxisAlignment.CENTER,
-                ),
-            ],
-            spacing=20,
-        ),
-        padding=20,
-    )
-    
+
+
     def navegar_realizar_reserva(e):
         # Guardar el contenido de la primera vista
         global primera_view_content
@@ -178,7 +228,7 @@ def main(page: ft.Page):
             [
                 ft.Text("Contáctanos", size=24, weight=ft.FontWeight.W_600),
                 ft.Text("📍 Dirección: Calle Sabores, 123, Ciudad Gourmet"),
-                ft.Text("📞 Teléfono: +34 123 456 789"),
+                ft.Text("📞 Teléfono: +34 623 456 789"),
                 ft.Text("📧 Correo: contacto@saboresunicos.com"),
             ],
             spacing=10,
@@ -194,7 +244,7 @@ def main(page: ft.Page):
     page.add(
         header,
         welcome_section,
-        menu_section,
+        container,
         reserva_section,
         contact_section,
     )

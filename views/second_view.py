@@ -4,6 +4,7 @@ second_view_content = []
 
 def realizar_reserva(page: ft.Page):
     page.title = "Second View"
+    page.route = "/realizar_reserva"
     page.add(ft.Text("Second View"))
     
     # Botón de "volver" que nos regresa a la primera vista
