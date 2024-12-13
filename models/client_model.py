@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from datetime import datetime, date, time
 
 # Conexión a la base de datos
-from services import get_db
+from services.mongo_service import get_db
 
 # Definir la tabla "clientes"
 class Clientes(BaseModel):

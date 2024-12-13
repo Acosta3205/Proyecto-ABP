@@ -4,6 +4,7 @@ primera_view_content = []
 
 def main(page: ft.Page):
     page.title = "Restaurante Sabores Únicos"
+    page.route = "/Home"
     page.scroll = ft.ScrollMode.AUTO
     page.theme_mode = ft.ThemeMode.LIGHT
     page.bgcolor = "#000000"
@@ -196,7 +197,7 @@ def main(page: ft.Page):
                     [
                         ft.ElevatedButton("Realizar Reserva", 
                                           on_click=navegar_realizar_reserva, 
-                                          style=ft.ButtonStyle(bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, color={"": "white", ft.ControlState.HOVERED: "black"}, side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, padding=20, text_style=ft.TextStyle(size=18)))
+                                          style=ft.ButtonStyle(bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, color={"": "white" , ft.ControlState.HOVERED: "black"}, side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, padding=20, text_style=ft.TextStyle(size=18)))
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
