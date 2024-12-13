@@ -12,6 +12,12 @@ def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
 
+    # Fuente de texto
+    page.fonts = {
+        "Kanit": "https://raw.githubusercontent.com/google/fonts/master/ofl/kanit/Kanit-Bold.ttf",
+        "Roboto": "http://themes.googleusercontent.com/static/fonts/robotoslab/v2/y7lebkjgREBJK96VQi37Zp0EAVxt0G0biEntp43Qt6E.ttf"
+    }
+
     # Header
     header = ft.Container(
         content=ft.Image(src="images/logo.png", fit=ft.ImageFit.CONTAIN),
@@ -19,16 +25,19 @@ def main(page: ft.Page):
     )
 
     # Welcome Section
-    welcome_section = ft.Container(
+    welcome_section = ft.Container(width=315 * 5,
         content=ft.Column(
             [
-                ft.Text("¡Bienvenidos a nuestra casa!", size=24, weight=ft.FontWeight.W_600, color="#FFC061"),
+                ft.Text("¡Bienvenidos a nuestra casa!", size=38, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
                 ft.Text(
                     "Bienvenidos a Sabores Únicos, un restaurante donde la tradición y la creatividad se fusionan para deleitar tu paladar. Nos especializamos en ofrecer una experiencia gastronómica inolvidable con nuestros exquisitos platos de pasta, tacos llenos de sabor y postres irresistibles."
-                    "\nEn Sabores Únicos, creemos que cada comida es una oportunidad para crear momentos especiales. Nuestra carta combina recetas clásicas con toques innovadores, utilizando ingredientes frescos y de la más alta calidad. Desde pastas artesanales preparadas con pasión, hasta tacos con combinaciones únicas y postres que despiertan los sentidos, cada bocado es una celebración de los mejores sabores.",
-                    size=20,
+                    "\n\nEn Sabores Únicos, creemos que cada comida es una oportunidad para crear momentos especiales. Nuestra carta combina recetas clásicas con toques innovadores, utilizando ingredientes frescos y de la más alta calidad. Desde pastas artesanales preparadas con pasión, hasta tacos con combinaciones únicas y postres que despiertan los sentidos, cada bocado es una celebración de los mejores sabores."
+                    "\n\nNuestro equipo de chefs y personal está comprometido con brindar un servicio cálido y atento, haciendo que cada visita sea una experiencia memorable. Ya sea que vengas a disfrutar de una cena en pareja, una reunión familiar o una comida casual con amigos, en Sabores Únicos te haremos sentir como en casa."
+                    "\n\nTe invitamos a descubrir un mundo de sabores que te sorprenderán y a compartir momentos inolvidables con nosotros. ¡Bienvenidos a Sabores Únicos, donde cada plato cuenta una historia llena de pasión y sabor!",
+                    size=24,
                     text_align=ft.TextAlign.JUSTIFY,
                     color="white",
+                    font_family="Roboto",
                 ),
             ],
             spacing=15,
@@ -40,7 +49,7 @@ def main(page: ft.Page):
     
     # Carrusel de imágenes de pasta
     images_pasta = ft.Row(width=309 * 5, wrap=False, scroll="auto")
-    for i in range(0, 10):
+    for i in range(0, 9):
         images_pasta.controls.append(
             ft.Image(
                 src=f"images/pasta/{i}.jpg",
@@ -67,7 +76,7 @@ def main(page: ft.Page):
         )
 
     # Carrusel de imágenes de postres
-    images_postres = ft.Row(width=309 * 5, wrap=False, scroll="auto")
+    images_postres = ft.Row(width=309 * 5, wrap=False, scroll="auto", on_scroll_interval=100)
     for i in range(0, 9):
         images_postres.controls.append(
             ft.Image(
@@ -133,8 +142,6 @@ def main(page: ft.Page):
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
 
-
-
     def navegar_realizar_reserva(e):
         # Guardar el contenido de la primera vista
         global primera_view_content
@@ -187,7 +194,9 @@ def main(page: ft.Page):
                 # Columna para realizar una reserva
                 ft.Column(
                     [
-                        ft.ElevatedButton("Realizar Reserva", on_click=navegar_realizar_reserva),
+                        ft.ElevatedButton("Realizar Reserva", 
+                                          on_click=navegar_realizar_reserva, 
+                                          style=ft.ButtonStyle(bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, color={"": "white", ft.ControlState.HOVERED: "black"}, side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, padding=20, text_style=ft.TextStyle(size=18)))
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -197,7 +206,7 @@ def main(page: ft.Page):
                 # Columna para editar la reserva
                 ft.Column(
                     [
-                        ft.ElevatedButton("Editar Reserva", on_click=navegar_editar_reserva),
+                        ft.ElevatedButton("Editar Reserva", on_click=navegar_editar_reserva, style=ft.ButtonStyle(bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, color={"": "white", ft.ControlState.HOVERED: "black"}, side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, padding=20, text_style=ft.TextStyle(size=18))),
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -207,7 +216,7 @@ def main(page: ft.Page):
                 # Columna para eliminar la reserva
                 ft.Column(
                     [
-                        ft.ElevatedButton("Eliminar Reserva", on_click=navegar_eliminar_reserva),
+                        ft.ElevatedButton("Eliminar Reserva", on_click=navegar_eliminar_reserva, style=ft.ButtonStyle(bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, color={"": "white", ft.ControlState.HOVERED: "black"}, side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, padding=20, text_style=ft.TextStyle(size=18))),
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -222,22 +231,80 @@ def main(page: ft.Page):
         alignment=ft.alignment.center,
     )
 
-    # Contact Section
+    # Contenedor para la sección de contacto
     contact_section = ft.Container(
         content=ft.Column(
             [
-                ft.Text("Contáctanos", size=24, weight=ft.FontWeight.W_600),
-                ft.Text("📍 Dirección: Calle Sabores, 123, Ciudad Gourmet"),
-                ft.Text("📞 Teléfono: +34 623 456 789"),
-                ft.Text("📧 Correo: contacto@saboresunicos.com"),
+                ft.Row(
+                    [
+                        ft.Container(
+                            content=ft.Column(
+                                [
+                                    ft.Text("Contáctanos", size=24, weight=ft.FontWeight.W_600),
+                                    ft.Text("📍 Dirección: Calle Sabores, 123, Ciudad Gourmet", size=16),
+                                    ft.Text("📞 Teléfono: +34 623 456 789", size=16),
+                                    ft.Text("📧 Correo: contacto@saboresunicos.com", size=16),
+                                ]
+                            ),
+                            alignment=ft.alignment.center,
+                            width=425,
+                        ),
+                        ft.Container(
+                            content=ft.Column(
+                                [
+                                    ft.Text("Ayuda", size=24, weight=ft.FontWeight.W_600),
+                                    ft.Text("🥖 Alergenos", size=16),
+                                    ft.Text("🎁 Información de promociones", size=16),
+                                    ft.Text("🍽️ Información nutricional", size=16),
+                                ]
+                            ),
+                            alignment=ft.alignment.center,
+                            width=425, 
+                        ),
+                        ft.Container(
+                            content=ft.Column(
+                                [
+                                    ft.Text("Datos de la empresa", size=24, weight=ft.FontWeight.W_600),
+                                    ft.Text("🗒️ Nombre: Sabores Únicos S.A.", size=16),
+                                    ft.Text("📅 Fundación: 2010", size=16),
+                                    ft.Text("🌐 Web: www.saboresunicos.com", size=16),
+                                ],
+                            ),
+                            alignment=ft.alignment.center,
+                            width=425,
+                        ),
+                        ft.Container(
+                            content=ft.Column(
+                                [
+                                    ft.Text("Términos y condiciones", size=24, weight=ft.FontWeight.W_600),
+                                    ft.Text("🔗 Política de privacidad", size=16),
+                                    ft.Text("📃 Términos de uso", size=16),
+                                    ft.Text("🔒 Seguridad", size=16),
+                                ]
+                            ),
+                            alignment=ft.alignment.center,
+                            width=425,
+                        ),
+                    ],
+                    alignment=ft.alignment.center,
+                    spacing=40,
+                ),
+                ft.Row(
+                    [
+                        ft.Container(
+                            content=ft.Text("© 2024 Sabores Únicos. Todos los derechos reservados.", size=14, weight=ft.FontWeight.W_400),
+                            alignment=ft.alignment.center,
+                            padding=7,
+                            width=471 * 4,
+                        ),
+                    ],
+                    alignment=ft.alignment.center,
+                ),
             ],
-            spacing=10,
-            alignment=ft.MainAxisAlignment.CENTER,
         ),
         alignment=ft.alignment.center,
-        padding=20,
-        bgcolor=ft.colors.AMBER_50,
-        border_radius=10,
+        padding=5,
+        bgcolor="#FFC061",
     )
 
     # Layout
