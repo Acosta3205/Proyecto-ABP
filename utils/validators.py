@@ -1,6 +1,5 @@
 import flet as ft
 from views.fifth_view import SelecionarMesaHora
-
 from views.main_view import main
 
 def validar_nombre(nombre: str):
@@ -51,7 +50,7 @@ def validar_direccion(direccion: str):
     """Comprueba que la direccion proporcionada no este vacio"""
     # Comprobar que la direccion no este vacia
     if len(direccion) == 0:
-        return "La direccion no puede estar vacia. Por favor, introduzca de nuevo la direccion."
+        return "La direccion no puede estar vacia."
     # Si la direccion es correcta, sale del bucle
     else:
         return None
@@ -59,22 +58,36 @@ def validar_direccion(direccion: str):
 def Validar_num_personas(NumPerson: int):
     """Comprobar que el campo solo contenga numeros"""
     if not NumPerson.isdigit():
-        return "Introduce un numero en el campo de cantidad de personas"
+        return "Numero de personas debe ser solo números válidos."
     elif NumPerson == "":
-        return "Este campo no puede estar vacio"
+        return "Numero de personas no puede estar vacio"
     else:
         return None
     
 def ValidarHora(Hora: str):
     """"Comprobar que la hora esté en el rango de 8:00 a 20:00"""
     if Hora == "":
-        return "Debe introducir una hora"
+        return "El campo de hora no puede estar vacio"
     elif int(Hora.split(":")[0]) < 8 or int(Hora.split(":")[0]) > 20:
         return "La hora debe estar entre las 8:00 y las 20:00"
     else:
         return None
+    
+def ValidarFecha(Fecha: str):
+    """"Comprobar que la fecha no este vacia"""
+    if Fecha == "":
+        return "El campo de fecha no puede estar vacio"
+    else:
+        return None
+    
+def ValidarNotas(Notas: str):
+    """"Comprobar que la nota no este vacia"""
+    if Notas == "":
+        return "El campo de notas no puede estar vacio. Debes selecionar una mesa"
+    else:
+        return None
 
-def validar_second_view(page, nombre, telefono, email, direccion):
+def funcion1(page, nombre, telefono, email, direccion):
     """Valida los campos del formulario y muestra errores si existen."""
     errores = []
 
@@ -107,39 +120,58 @@ def validar_second_view(page, nombre, telefono, email, direccion):
         page.controls.clear()
         page.update()
         SelecionarMesaHora(page)
+    
+    def close_dialog(page):
+        page.dialog.open = False
+        page.update()
 
-def validar_fifth_view(page, NumPerson, Hora):
-    error = []
+def funcion2(page, NumPerson, Hora, Fecha, Notas):
+    """Valida los campos del formulario y muestra errores si existen."""
+    errores = []
     
     error_NumPerson = Validar_num_personas(NumPerson.value)
     if error_NumPerson != None:
-        error.append(error_NumPerson)
+        errores.append(error_NumPerson)
 
     error_Hora = ValidarHora(Hora.value)
     if error_Hora != None:
-        error.append(error_Hora)
+        errores.append(error_Hora)
 
-    if len(error) > 0:
+    error_Fecha = ValidarFecha(Fecha.value)
+    if error_Fecha != None:
+        errores.append(error_Fecha)
+
+    error_Notas = ValidarNotas(Notas.value)
+    if error_Notas != None:
+        errores.append(error_Notas)
+        
+
+    if len(errores) > 0:
         # Mostrar errores en un cuadro de diálogo
         page.dialog = ft.AlertDialog(
             title=ft.Text("Errores de Validación"),
-            content=ft.Text("\n".join(error)),
+            content=ft.Text("\n".join(errores)),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
         )
         page.dialog.open = True
         page.update()
     else:
-        page.dialog = ft.AlertDialog(
-            title=ft.Text("Reserva Confirmada", icon=ft.icons.CHECK_SHARP),
-            content=ft.Text("¡Gracias por reservar mesa en nuestro restaurante! Te esperamos con gratitud y entusiasmo para ofrecerte una experiencia inolvidable. ¡Nos vemos pronto!"),
-            icon=ft.icons.BEENHERE_SHARP,
-            actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
-        )
+        # # Mostrar errores en un cuadro de diálogo
+        # page.dialog = ft.AlertDialog(
+        #     title=ft.Text("Reserva Confirmada", icon=ft.icons.CHECK_SHARP),
+        #     content=ft.Text("¡Gracias por reservar mesa en nuestro restaurante! Te esperamos con gratitud y entusiasmo para ofrecerte una experiencia inolvidable. ¡Nos vemos pronto!"),
+        #     actions=[ft.TextButton("Aceptar", on_click=lambda e: cerrar_reserva(page))],
+        # )
+        # page.dialog.open = True
+        # page.update()
+
+    
+    def close_dialog(page):
+        page.dialog.open = False
+        page.update()
+
+    def cerrar_reserva(page):
+        page.dialog.open = False
         page.controls.clear()
         page.update()
         main(page)
-
-# Función para cerrar el diálogo
-def close_dialog(page):
-    page.dialog.open = False
-    page.update()

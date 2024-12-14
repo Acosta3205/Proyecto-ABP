@@ -2,7 +2,9 @@ import datetime
 import locale
 import flet as ft
 
-from utils.validators import validar_fifth_view
+def funcion22(page, NumPerson, Hora, Fecha, Notas):
+    from utils.validators import funcion2
+    funcion2(page, NumPerson, Hora, Fecha, Notas)
 
 fifth_view_content = []
 
@@ -116,8 +118,8 @@ def SelecionarMesaHora(page: ft.Page):
         # Actualiza la página para reflejar los cambios
         page.update()
 
-        from views.second_view import datos_reserva
-        datos_reserva(page)
+        from views.second_view import realizar_reserva
+        realizar_reserva(page)
     
     def back_to_first_view(page: ft.Page):
         # Guardar el contenido de la segunda vista
@@ -221,8 +223,7 @@ def SelecionarMesaHora(page: ft.Page):
                         ft.dropdown.Option("Mesa 3"),
                         ft.dropdown.Option("Mesa 4"),
                         ft.dropdown.Option("Mesa 5")
-
-                    ]
+                    ],
                 )
 
     TextNumPersonas = ft.TextField(
@@ -246,9 +247,27 @@ def SelecionarMesaHora(page: ft.Page):
                     read_only=True,
                 )
     
+    def funcionNota(e):
+        """Si hay selecionado una mesa se activa le campo nota para poder escribit"""
+        if TextMesa.value == "Mesa 1":
+            TextNota.value = "Ventana"
+        elif TextMesa.value == "Mesa 2":
+            TextNota.value = "Terraza"
+        elif TextMesa.value == "Mesa 3":
+            TextNota.value = "Terraza Techada"
+        elif TextMesa.value == "Mesa 4":
+            TextNota.value = "Interior Medio"
+        elif TextMesa.value == "Mesa 5":
+            TextNota.value = "Interior Grande"
+
+        TextNota.update()
+
+    TextMesa.on_change = funcionNota
+    
     BotonConfirmar = ft.ElevatedButton(
                             "Confirmar reserva",
-                            on_click=lambda e: validar_fifth_view(page, TextNumPersonas, TextHora),
+                            on_click=lambda e: funcion22(page, TextNumPersonas, TextHora, TextFecha, TextNota),
+                            # on_click=lambda e: back_to_first_view(page),
                             style=ft.ButtonStyle(
                                 bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
                                 color={"": "white" , ft.ControlState.HOVERED: "black"}, 

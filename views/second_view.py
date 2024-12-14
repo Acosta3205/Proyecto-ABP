@@ -1,8 +1,11 @@
 import flet as ft
-
-from utils.validators import validar_second_view
+from utils.validators import funcion1
 
 second_view_content = []
+
+def Funcion12(page, TextNombre, TextTelefono, TextEmail, TextDireccion):
+        from utils.validators import funcion1
+        funcion1(page, TextNombre, TextTelefono, TextEmail, TextDireccion)
 
 def realizar_reserva(page: ft.Page):
     page.title = "Sabores Únicos - Realizar reserva"
@@ -152,7 +155,8 @@ def realizar_reserva(page: ft.Page):
     
     BotonMesa = ft.ElevatedButton(
                             "Selecionar Mesa y Hora",
-                            on_click=lambda e: validar_second_view(page, TextNombre, TextTelefono, TextEmail, TextDireccion),
+                            on_click=lambda e: Funcion12(page, TextNombre, TextTelefono, TextEmail, TextDireccion),
+                            # on_click=lambda e: go_to_fifth_view(page),
                             style=ft.ButtonStyle(
                                 bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
                                 color={"": "white" , ft.ControlState.HOVERED: "black"}, 
@@ -282,3 +286,5 @@ def realizar_reserva(page: ft.Page):
         realizar_reserva,
         contact_section,
         )
+        
+    
