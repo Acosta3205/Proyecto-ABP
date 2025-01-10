@@ -1,7 +1,10 @@
-# Importar las librerias necesarias
-from mongo_service import get_db
+from services.querys import id_nuevo_cliente, id_nueva_reserva
 
-mesas = [{
+cliente_actual = []
+
+# Insertar las mesas a partir de un archivo .json
+def insertar_mesas_json(db):
+  mesas = [{
     "id": 1,
     "numero_mesa": 1,
     "capacidad": 4,
@@ -122,19 +125,49 @@ mesas = [{
     "ubicacion": "Interior"
   }]
 
-# Insertar las mesas a partir de un archivo .json
-def insertar_mesas_json(mesas):
   """Recibe una lista de mesas y las inserta en la base de datos"""
   try:
-    # Obtener la base de datos
-    db  = get_db()
+    mesas_insertadas = []
+    mesas_existentes = []
 
     # Insertar las mesas desde la lista en la colección "Mesas"
-    db.mesas.insert_many(mesas)
-    print("Las mesas se han insertado correctamente en la base de datos.")
+    # Comprobar si cada una de las mesas ya existe en la base de datos
+    for mesa in mesas:
+      if db.mesas.find_one({"id": mesa["id"]}) is None:
+        db.mesas.insert_one(mesa)
+        mesas_insertadas.append(mesa["id"])
+      else:
+        mesas_existentes.append(mesa["id"])
+
+    if len(mesas_insertadas) > 0:
+      print(f"Se han insertado las mesas: {mesas_insertadas}")
+    
+    if len(mesas_existentes) > 0:
+      print(f"Las mesas ya existentes en la base de datos eran: {mesas_existentes}")
 
   except Exception as e:
     print(f"Error al insertar las mesas en la base de datos: {e}")
 
-# Insertar las mesas
-insertar_mesas_json(mesas)
+def insertar_datos_clientes(page, db, nombre, telefono, email, direccion):
+  """Recibe los datos del formulario y los inserta en la base de datos"""
+  id_cliente = id_nuevo_cliente(db) + 1
+  cliente_actual.append(id_cliente)
+  try:
+    # Insertar los datos en la colección "Clientes"
+    db.clientes.insert_one({"id": id_cliente, "nombre": nombre, "telefono": telefono, "email": email, "direccion": direccion})
+    print("Los datos se han insertado correctamente en la base de datos.")
+
+  except Exception as e:
+    print(f"Error al insertar los datos en la base de datos: {e}")
+
+
+def insertar_datos_reserva(db, NumMesa, NumPerson, Hora, Fecha, Notas):
+  """Recibe los datos del formulario y los inserta en la base de datos"""
+  id_reserva = id_nueva_reserva(db) + 1
+  try:
+    # Insertar los datos en la colección "Reservas"
+    db.reservas.insert_one({"id": id_reserva, "id_cliente": cliente_actual[0], "id_mesa": NumMesa, "fecha": Fecha, "hora": Hora, "num_personas": NumPerson, "estado": "Confirmada", "notas": Notas})
+    print("Los datos se han insertado correctamente en la base de datos.")
+
+  except Exception as e:
+    print(f"Error al insertar los datos en la base de datos: {e}")

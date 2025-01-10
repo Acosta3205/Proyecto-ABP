@@ -2,7 +2,7 @@ import flet as ft
 
 primera_view_content = []
 
-def main(page: ft.Page):
+def main(page: ft.Page, db):
     page.title = "Restaurante Sabores Únicos"
     page.route = "/Home"
     page.scroll = ft.ScrollMode.AUTO
@@ -156,7 +156,7 @@ def main(page: ft.Page):
 
         # Importar la segunda vista
         from views.second_view import realizar_reserva
-        realizar_reserva(page)
+        realizar_reserva(page, db)
 
     def navegar_editar_reserva(e):
         # Guardar el contenido de la primera vista

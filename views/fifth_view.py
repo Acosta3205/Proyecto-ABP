@@ -2,13 +2,17 @@ import datetime
 import locale
 import flet as ft
 
-def funcion22(page, NumPerson, Hora, Fecha, Notas):
-    from utils.validators import funcion2
-    funcion2(page, NumPerson, Hora, Fecha, Notas)
+from services.querys import mostrar_mesas
+from services.querys import mostrar_nota_mesa
+
+
+def DatosReserva(page, db, TextMesa, TextNumPersonas, TextHora, TextFecha, TextNota):
+    from utils.validators import ReservarMesa
+    ReservarMesa(page, db, TextMesa, TextNumPersonas, TextHora, TextFecha, TextNota)
 
 fifth_view_content = []
 
-def SelecionarMesaHora(page: ft.Page):
+def SelecionarMesaHora(page: ft.Page, db):
     page.title = "Sabores Unicos - Elegir Mesa y Hora de reserva"
     page.route = "RealizarReserva/ElegirMesaHoraDeReserva"
 
@@ -107,7 +111,7 @@ def SelecionarMesaHora(page: ft.Page):
         ),
     )
     
-    def back_to_second_view(page: ft.Page):
+    def back_to_second_view(page: ft.Page, db):
         # Guardar el contenido de la segunda vista
         global fifth_view_content
         fifth_view_content = page.controls[:]
@@ -119,9 +123,9 @@ def SelecionarMesaHora(page: ft.Page):
         page.update()
 
         from views.second_view import realizar_reserva
-        realizar_reserva(page)
+        realizar_reserva(page, db)
     
-    def back_to_first_view(page: ft.Page):
+    def back_to_first_view(page: ft.Page, db):
         # Guardar el contenido de la segunda vista
         global second_view_content
         second_view_content = page.controls[:]
@@ -133,7 +137,7 @@ def SelecionarMesaHora(page: ft.Page):
         page.update()
 
         from views.main_view import main
-        main(page)
+        main(page, db)
 
     # Header
     ImageHeader = ft.Container(
@@ -153,7 +157,7 @@ def SelecionarMesaHora(page: ft.Page):
                                     ft.ElevatedButton("Inicio", 
                                           width=466,
                                           height=79,
-                                          on_click=lambda e: back_to_first_view(page), 
+                                          on_click=lambda e: back_to_first_view(page, db), 
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
                                 ],
                             ),
@@ -218,11 +222,6 @@ def SelecionarMesaHora(page: ft.Page):
                     border=ft.InputBorder.NONE,
                     filled=True,
                     options=[
-                        ft.dropdown.Option("Mesa 1"),
-                        ft.dropdown.Option("Mesa 2"),
-                        ft.dropdown.Option("Mesa 3"),
-                        ft.dropdown.Option("Mesa 4"),
-                        ft.dropdown.Option("Mesa 5")
                     ],
                 )
 
@@ -248,25 +247,51 @@ def SelecionarMesaHora(page: ft.Page):
                 )
     
     def funcionNota(e):
-        """Si hay selecionado una mesa se activa le campo nota para poder escribit"""
-        if TextMesa.value == "Mesa 1":
-            TextNota.value = "Ventana"
-        elif TextMesa.value == "Mesa 2":
-            TextNota.value = "Terraza"
-        elif TextMesa.value == "Mesa 3":
-            TextNota.value = "Terraza Techada"
-        elif TextMesa.value == "Mesa 4":
-            TextNota.value = "Interior Medio"
-        elif TextMesa.value == "Mesa 5":
-            TextNota.value = "Interior Grande"
+        """Si hay selecionada una mesa se muestra en el campo nota la ubicación de la mesa"""
+        if TextMesa.value:
+            # Obtener la nota de la mesa
+            ubicacion = mostrar_nota_mesa(db, TextMesa.value)
+            
+            # Verificar si se obtuvo una ubicación válida
+            if ubicacion:
+                TextNota.value = "Ubicación de la mesa: " + ubicacion
+            else:
+                TextNota.value = "Ubicación de la mesa no encontrada"
 
         TextNota.update()
+    
+    def añadirMesasListado(e):
+        """Recibe la lista de mesas adecuadas al número de personas y las agrega a la lista de mesas"""
+        numMesas = mostrar_mesas(db, TextNumPersonas.value)
 
+        # Vaciar el campo de nota
+        TextNota.value = ""
+
+        # Actualizar el campo de nota
+        TextNota.update()
+
+        # Vaciar el listado de mesas
+        TextMesa.options.clear()
+
+        # Vaciar el campo de mesa
+        TextMesa.value = ""
+
+        # Actualizar el listado de mesas
+        TextMesa.update()
+
+        # Añadir las nuevas mesas
+        for mesa in numMesas:
+            TextMesa.options.append(ft.dropdown.Option(mesa))
+
+        # Actualizar el listado de mesas
+        TextMesa.update()
+
+    TextNumPersonas.on_change = añadirMesasListado
     TextMesa.on_change = funcionNota
     
     BotonConfirmar = ft.ElevatedButton(
                             "Confirmar reserva",
-                            on_click=lambda e: funcion22(page, TextNumPersonas, TextHora, TextFecha, TextNota),
+                            on_click=lambda e: DatosReserva(page, db, TextMesa, TextNumPersonas, TextHora, TextFecha, TextNota),
                             # on_click=lambda e: back_to_first_view(page),
                             style=ft.ButtonStyle(
                                 bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
@@ -279,7 +304,7 @@ def SelecionarMesaHora(page: ft.Page):
     
     BotonVolver = ft.ElevatedButton(
                             "Volver",
-                            on_click=lambda e: back_to_second_view(page),
+                            on_click=lambda e: back_to_second_view(page, db),
                             style=ft.ButtonStyle(
                                 bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
                                 color={"": "white" , ft.ControlState.HOVERED: "black"}, 

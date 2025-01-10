@@ -1,13 +1,12 @@
 import flet as ft
-from utils.validators import funcion1
+
+def DatosCliente(page, db, TextNombre, TextTelefono, TextEmail, TextDireccion):
+        from utils.validators import DatosCliente
+        DatosCliente(page, db, TextNombre, TextTelefono, TextEmail, TextDireccion)
 
 second_view_content = []
 
-def Funcion12(page, TextNombre, TextTelefono, TextEmail, TextDireccion):
-        from utils.validators import funcion1
-        funcion1(page, TextNombre, TextTelefono, TextEmail, TextDireccion)
-
-def realizar_reserva(page: ft.Page):
+def realizar_reserva(page: ft.Page, db):
     page.title = "Sabores Únicos - Realizar reserva"
     page.route = "/RealizarReserva"
     
@@ -24,9 +23,9 @@ def realizar_reserva(page: ft.Page):
         page.update()
 
         from views.fifth_view import SelecionarMesaHora
-        SelecionarMesaHora(page)
+        SelecionarMesaHora(page, db)
     
-    def back_to_first_view(page: ft.Page):
+    def back_to_first_view(page: ft.Page, db):
         # Guardar el contenido de la segunda vista
         global second_view_content
         second_view_content = page.controls[:]
@@ -38,7 +37,7 @@ def realizar_reserva(page: ft.Page):
         page.update()
 
         from views.main_view import main
-        main(page)
+        main(page, db)
     
     # Header
     ImageHeader = ft.Container(
@@ -58,7 +57,7 @@ def realizar_reserva(page: ft.Page):
                                     ft.ElevatedButton("Inicio", 
                                           width=466,
                                           height=79,
-                                          on_click=lambda e: back_to_first_view(page), 
+                                          on_click=lambda e: back_to_first_view(page, db), 
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
                                 ],
                             ),
@@ -155,7 +154,7 @@ def realizar_reserva(page: ft.Page):
     
     BotonMesa = ft.ElevatedButton(
                             "Selecionar Mesa y Hora",
-                            on_click=lambda e: Funcion12(page, TextNombre, TextTelefono, TextEmail, TextDireccion),
+                            on_click=lambda e: DatosCliente(page, db, TextNombre, TextTelefono, TextEmail, TextDireccion),
                             # on_click=lambda e: go_to_fifth_view(page),
                             style=ft.ButtonStyle(
                                 bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
@@ -167,7 +166,7 @@ def realizar_reserva(page: ft.Page):
                         )
     BotonVolver = ft.ElevatedButton(
                             "Volver",
-                            on_click=lambda e: back_to_first_view(page),
+                            on_click=lambda e: back_to_first_view(page, db),
                             style=ft.ButtonStyle(
                                 bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
                                 color={"": "white" , ft.ControlState.HOVERED: "black"}, 

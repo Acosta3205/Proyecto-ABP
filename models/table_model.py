@@ -5,7 +5,6 @@ from pydantic import BaseModel
 from datetime import datetime, date, time
 
 # Conexión a la base de datos
-from services import get_db
 
 class Mesas(BaseModel):
     id: int
@@ -13,11 +12,7 @@ class Mesas(BaseModel):
     capacidad: int
     ubicacion: str
 
-# Realizar la creación de las colecciones a partir de los modelos
-if __name__ == "__main__":
-    # Obtener la base de datos
-    db = get_db()
-
+def crear_tabla_mesas(db):
     # Crear las colecciones
     # Comprobar si las colecciones existen
 
@@ -28,5 +23,4 @@ if __name__ == "__main__":
 
         # Informar al usuario
         print("La tabla mesas se ha creado correctamente.")
-
     

@@ -4,9 +4,6 @@ from pydantic import BaseModel
 # Importar datetime
 from datetime import datetime, date, time
 
-# Conexión a la base de datos
-from services.mongo_service import get_db
-
 # Definir la tabla "clientes"
 class Clientes(BaseModel):
     id: int
@@ -15,11 +12,10 @@ class Clientes(BaseModel):
     email: str
     direccion: str
 
-# Realizar la creación de las colecciones a partir de los modelos
-if __name__ == "__main__":
-    # Obtener la base de datos
-    db = get_db()
+    class Config:
+        from_attributes = True
 
+def crear_tabla_clientes(db):
     # Crear las colecciones
     # Comprobar si las colecciones existen
     if "clientes" in db.list_collection_names():

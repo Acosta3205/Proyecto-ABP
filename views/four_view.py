@@ -2,7 +2,7 @@ import flet as ft
 
 four_view_content = []
 
-def eliminar_reserva(page: ft.Page):
+def eliminar_reserva(page: ft.Page, db):
     page.title = "Fourth View"
     page.add(ft.Text("Fourth View"))
 
@@ -10,7 +10,7 @@ def eliminar_reserva(page: ft.Page):
     back_button = ft.ElevatedButton("Back", on_click=lambda e: back_to_first_view(page))
     page.add(back_button)
 
-    def back_to_first_view(page: ft.Page):
+    def back_to_first_view(page: ft.Page, db):
         # Guardar el contenido de la segunda vista
         global four_view_content
         four_view_content = page.controls[:]
@@ -22,7 +22,7 @@ def eliminar_reserva(page: ft.Page):
         page.update()
 
         from views.main_view import main
-        main(page)
+        main(page, db)
     
     # Header
     ImageHeader = ft.Container(
@@ -42,7 +42,7 @@ def eliminar_reserva(page: ft.Page):
                                     ft.ElevatedButton("Inicio", 
                                           width=466,
                                           height=79,
-                                          on_click=lambda e: back_to_first_view(page), 
+                                          on_click=lambda e: back_to_first_view(page, db), 
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
                                 ],
                             ),
