@@ -1,15 +1,20 @@
 import flet as ft
 
+id_fila = None
+
 third_view_content = []
 
-def DatosClienteBuscarReserva(page, db, TextNombre, TextTelefono):
-        from utils.validators import DatosClienteBuscarReserva
-        DatosClienteBuscarReserva(page, db, TextNombre, TextTelefono)
+def DatosClienteBuscarReservaModificar(page, db, TextNombre, TextTelefono):
+        from utils.validators import DatosClienteBuscarReservaModificar
+        DatosClienteBuscarReservaModificar(page, db, TextNombre, TextTelefono)
 
 def buscar_reservas(db , TextNombre, TextTelefono):
         from services.querys import buscar_reservas
         buscar_reservas(db, TextNombre, TextTelefono)
 
+def IrAModificarReserva(page, db, TextNombre, TextTelefono, id_reserva):
+        from utils.validators import IrAModificarReserva
+        IrAModificarReserva(page, db, TextNombre, TextTelefono, id_reserva)
 
 # Generar filas desde las reservas obtenidas
 def generar_tabla_reservas(page, tabla, reservas_cliente_lista):
@@ -30,29 +35,37 @@ def generar_tabla_reservas(page, tabla, reservas_cliente_lista):
                     ft.DataCell(ft.Text(reserva["num_personas"])),
                     ft.DataCell(ft.Text(reserva["notas"])),
                 ],
-                on_select_changed=lambda e, reserva=reserva: seleccionar_fila(page, e, reserva),
+                on_select_changed=lambda e, reserva=reserva: seleccionar_fila(page, e),
             )
             tabla.rows.append(fila)
 
         # Actualiza la página para reflejar los cambios
         tabla.update()
 
-def seleccionar_fila(page, e, reserva):
+def seleccionar_fila(page, e):
     """Al hacer clic en una de las filas de la tabla, la fila se marca como seleccionada."""
+    global id_fila
     # Obtener la fila seleccionada
     fila = e.control
 
     # Obtener el ID de la fila
-    row_id = reserva["id"]
+    row_id = fila.data
+
+    # Guardar el ID de la fila en una variable global
+    id_fila = row_id
     
     # Invertir el estado de la fila
     fila.selected = not fila.selected
 
+    print("ID de la fila seleccionada:", row_id)
+
+    print("ID: ", id_fila)
+
     # Mostrar un mensaje indicando la acción realizada
     page.snack_bar = ft.SnackBar(
-                ft.Text(f"Reserva {'seleccionada' if fila.selected else 'deseleccionada'}: {row_id}"),
-                open=True,
-            )
+            ft.Text(f"Reserva {'seleccionada' if fila.selected else 'deseleccionada'}: {row_id}"),
+            open=True,
+    )
     
     # Actualizar la página para reflejar los cambios
     page.update()
@@ -69,16 +82,25 @@ TablaReservas = ft.DataTable(
     ],
     rows=[],  # Generar filas dinámicamente
     bgcolor="white",
+    expand=True,
+    width=1575,
 )
 
+def vaciar_tabla(e):
+    TablaReservas.rows.clear()
+    TablaReservas.update()
+
 def editar_reserva(page: ft.Page, db):
-    page.title = "Third View"
-    page.add(ft.Text("Third View"))
+    page.title = "Sabores Únicos - Modificar reserva"
+    page.route = "/ModificarReserva"
     
     def back_to_first_view(page: ft.Page, db):
         # Guardar el contenido de la segunda vista
         global third_view_content
         third_view_content = page.controls[:]
+
+        # Vacia el contenido de la tabla
+        TablaReservas.rows.clear()
 
         # Limpia el contenido de la página actual
         page.controls.clear()
@@ -88,6 +110,20 @@ def editar_reserva(page: ft.Page, db):
 
         from views.main_view import main
         main(page, db)
+
+    def go_to_sixth_view(page: ft.Page, db):
+        # Guardar el contenido de la tercera vista
+        global third_view_content
+        third_view_content = page.controls[:]
+
+        # Limpia el contenido de la página actual
+        page.controls.clear()
+
+        # Actualiza la página para reflejar los cambios
+        page.update()
+
+        from views.sixth_view import ModificarReserva
+        ModificarReserva(page, db, id_fila)
          
     # Header
     ImageHeader = ft.Container(
@@ -107,7 +143,7 @@ def editar_reserva(page: ft.Page, db):
                                     ft.ElevatedButton("Inicio", 
                                           width=466,
                                           height=79,
-                                          on_click=lambda e: back_to_first_view(page), 
+                                          on_click=lambda e: back_to_first_view(page, db), 
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
                                 ],
                             ),
@@ -172,6 +208,9 @@ def editar_reserva(page: ft.Page, db):
                     border=ft.InputBorder.NONE,
                     filled=True,
                 )
+    
+    TextNombre.on_change = vaciar_tabla
+
     TextTelefono = ft.TextField(
                     label="Telefono",
                     hint_text="Introduzca su telefono",
@@ -182,21 +221,11 @@ def editar_reserva(page: ft.Page, db):
                     filled=True,
                 )
     
-    # Tabla que mostrará las reservas que se han encontrado relacionadas con el cliente
-    # Datos de ejemplo
-    reservas = [
-        {"numero": "1", "mesa": "Mesa 5", "fecha": "2025-01-12", "hora": "19:00", "comensales": "4", "nota": "Cumpleaños"},
-        {"numero": "2", "mesa": "Mesa 3", "fecha": "2025-01-13", "hora": "20:00", "comensales": "2", "nota": "Cerca de la ventana"},
-        {"numero": "3", "mesa": "Mesa 1", "fecha": "2025-01-14", "hora": "18:30", "comensales": "3", "nota": "Sin gluten"},
-    ]
-
-    
-
+    TextTelefono.on_change = vaciar_tabla
 
     BotonBuscarReserva = ft.ElevatedButton(
                             "Buscar reserva",
-                            on_click=lambda e: DatosClienteBuscarReserva(page, db, TextNombre, TextTelefono),
-                            # on_click=lambda e: go_to_fifth_view(page),
+                            on_click=lambda e: DatosClienteBuscarReservaModificar(page, db, TextNombre, TextTelefono),
                             style=ft.ButtonStyle(
                                 bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
                                 color={"": "white" , ft.ControlState.HOVERED: "black"}, 
@@ -208,8 +237,7 @@ def editar_reserva(page: ft.Page, db):
     
     BotonModificarReserva = ft.ElevatedButton(
                             "Modificar reserva",
-                            on_click=lambda e: DatosClienteBuscarReserva(page, db, TextNombre, TextTelefono),
-                            # on_click=lambda e: go_to_fifth_view(page),
+                            on_click=lambda e: IrAModificarReserva(page, db, TextNombre, TextTelefono, id_fila),
                             style=ft.ButtonStyle(
                                 bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
                                 color={"": "white" , ft.ControlState.HOVERED: "black"}, 

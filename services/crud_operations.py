@@ -1,4 +1,4 @@
-from services.querys import id_nuevo_cliente, id_nueva_reserva
+from services.querys import id_nuevo_cliente, id_nueva_reserva, comprobar_cliente_existente, buscar_id_cliente
 
 cliente_actual = []
 
@@ -150,12 +150,23 @@ def insertar_mesas_json(db):
 
 def insertar_datos_clientes(page, db, nombre, telefono, email, direccion):
   """Recibe los datos del formulario y los inserta en la base de datos"""
-  id_cliente = id_nuevo_cliente(db) + 1
-  cliente_actual.append(id_cliente)
   try:
-    # Insertar los datos en la colección "Clientes"
-    db.clientes.insert_one({"id": id_cliente, "nombre": nombre, "telefono": telefono, "email": email, "direccion": direccion})
-    print("Los datos se han insertado correctamente en la base de datos.")
+    if not comprobar_cliente_existente(db, nombre, telefono, email, direccion):
+      # Vaciar la lista de ID
+      cliente_actual.clear()
+      # Generar un nuevo ID para el cliente
+      id_cliente = id_nuevo_cliente(db) + 1
+      cliente_actual.append(id_cliente)
+      # Insertar los datos en la colección "Clientes"
+      db.clientes.insert_one({"id": id_cliente, "nombre": nombre, "telefono": telefono, "email": email, "direccion": direccion})
+      print("Los datos se han insertado correctamente en la base de datos.")
+
+    else:
+      # Vaciar la lista de ID
+      cliente_actual.clear()
+      # Recuperar el ID del cliente existente
+      cliente_actual.append(buscar_id_cliente(db, nombre, telefono))
+      print("El cliente ya existe en la base de datos y por lo tanto no se ha insertado.")
 
   except Exception as e:
     print(f"Error al insertar los datos en la base de datos: {e}")
@@ -171,3 +182,12 @@ def insertar_datos_reserva(db, NumMesa, NumPerson, Hora, Fecha, Notas):
 
   except Exception as e:
     print(f"Error al insertar los datos en la base de datos: {e}")
+
+def GuardarReserva(db, NumMesa, NumPerson, Hora, Fecha, Notas, id_reserva):
+  try:
+    # Actualizar los datos en la colección "Reservas"
+    db.reservas.update_one({"id": id_reserva}, {"$set": {"id_mesa": NumMesa, "fecha": Fecha, "hora": Hora, "num_personas": NumPerson, "estado": "Confirmada", "notas": Notas}})
+    print("Los datos se han actualizado correctamente en la base de datos.")
+
+  except Exception as e:
+    print(f"Error al actualizar los datos en la base de datos: {e}")

@@ -1,116 +1,152 @@
+import datetime
+import locale
 import flet as ft
 
-four_view_content = []
+from services.querys import mostrar_mesas
+from services.querys import mostrar_nota_mesa
 
-# Variable global que almacenará el ID de la fila seleccionada en la tabla de reservas
-id_fila_eliminar = None
 
-def DatosClienteBuscarReservaEliminar(page, db, TextNombre, TextTelefono):
-    from utils.validators import DatosClienteBuscarReservaEliminar
-    DatosClienteBuscarReservaEliminar(page, db, TextNombre, TextTelefono)
+def ValidarReserva(page, db, TextMesa, TextFecha, TextHora, TextNumPersonas, TextNota, id_reserva):
+    from utils.validators import ValidarReserva
+    ValidarReserva(page, db, TextMesa.value, TextFecha.value, TextHora.value, TextNumPersonas.value, TextNota.value, id_reserva)
 
-def buscar_reservas(db , TextNombre, TextTelefono):
-    from services.querys import buscar_reservas
-    buscar_reservas(db, TextNombre, TextTelefono)
+from services.querys import CargarDatosReserva
 
-def EliminarReservaClient(page, db, nombre, telefono, id_fila_eliminar):
-    from utils.validators import EliminarReservaCliente
-    EliminarReservaCliente(page, db, nombre, telefono, id_fila_eliminar)
+sixth_view_content = []
 
-# Generar filas desde las reservas obtenidas
-def generar_tabla_reservas(page, tabla, reservas_cliente_lista):
-    """Rellena la tabla con las reservas obtenidas."""
-    # Limpia las filas actuales
-    tabla.rows.clear()
+def ModificarReserva(page: ft.Page, db, id_reserva):
+    page.title = "Sabores Unicos - Modificar datos de la reserva"
+    page.route = "ModificarReserva/ModificarDatosReserva"
 
-    # Agrega las nuevas filas
-    for reserva in reservas_cliente_lista:
-        fila = ft.DataRow(
-            data=reserva["id"],
-            selected=False,
-            cells=[
-                ft.DataCell(ft.Text(reserva["id"])),
-                ft.DataCell(ft.Text(reserva["id_mesa"])),
-                ft.DataCell(ft.Text(reserva["fecha"])),
-                ft.DataCell(ft.Text(reserva["hora"])),
-                ft.DataCell(ft.Text(reserva["num_personas"])),
-                ft.DataCell(ft.Text(reserva["notas"])),
-            ],
-        )
-        tabla.rows.append(fila)
+    reserva = CargarDatosReserva(page, db, id_reserva)
 
-    # Actualiza la página para reflejar los cambios
-    tabla.update()
+    # Establece el idioma en español
+    locale.setlocale(locale.LC_TIME, 'es_ES')
 
-            
-# Crear la tabla
-TablaReservas2 = ft.DataTable(
-    columns=[
-        ft.DataColumn(ft.Text("Número de reserva")),
-        ft.DataColumn(ft.Text("Mesa")),
-        ft.DataColumn(ft.Text("Fecha")),
-        ft.DataColumn(ft.Text("Hora")),
-        ft.DataColumn(ft.Text("Comensales")),
-        ft.DataColumn(ft.Text("Nota")),
-    ],
-    rows=[],  # Generar filas dinámicamente
-    bgcolor="white",
-    width=1575,
-)
-
-def seleccionar_fila_eliminar(page, e):
-    """Al hacer clic en una de las filas de la tabla, la fila se marca como seleccionada."""
-    global id_fila_eliminar
-    # Obtener la fila seleccionada
-    fila = e.control
-
-    # Obtener el ID de la fila
-    row_id = fila.data
-
-    # Guardar el ID de la fila en una variable global
-    id_fila_eliminar = row_id
-    
-    # Invertir el estado de la fila
-    fila.selected = not fila.selected
-
-    print("ID de la fila seleccionada:", row_id)
-
-    print("ID: ", id_fila_eliminar)
-
-    # Mostrar un mensaje indicando la acción realizada
-    page.snack_bar = ft.SnackBar(
-            ft.Text(f"Reserva {'seleccionada' if fila.selected else 'deseleccionada'}: {row_id}"),
-            open=True,
-    )
-    
-    # Actualizar la página para reflejar los cambios
-    page.update()
-
-def vaciar_tabla(e):
-    TablaReservas2.rows.clear()
-    TablaReservas2.update()
-
-def eliminar_reserva(page: ft.Page, db):
-    page.title = "Sabores Únicos - Eliminar reserva"
-    page.route = "/EliminarReservaCliente"
-    
-    def back_to_first_view(page: ft.Page, db):
+    def back_to_second_view(page: ft.Page, db):
         # Guardar el contenido de la segunda vista
-        global four_view_content
-        four_view_content = page.controls[:]
+        global sixth_view_content
+        sixth_view_content = page.controls[:]
 
         # Limpia el contenido de la página actual
         page.controls.clear()
 
-        # Vacia el contenido de la tabla
-        TablaReservas2.rows.clear()
+        # Actualiza la página para reflejar los cambios
+        page.update()
+
+        from views.second_view import realizar_reserva
+        realizar_reserva(page, db)
+    
+    def back_to_first_view(page: ft.Page, db):
+        # Guardar el contenido de la segunda vista
+        global second_view_content
+        second_view_content = page.controls[:]
+
+        # Limpia el contenido de la página actual
+        page.controls.clear()
 
         # Actualiza la página para reflejar los cambios
         page.update()
 
         from views.main_view import main
         main(page, db)
-         
+
+    # Maneja el cambio de fecha
+    def handle_change_date(e):
+        TextFecha.value = e.control.value.strftime('%d de %B %Y')
+        page.update()
+    
+    # Maneja el cambio de hora
+    def handle_change_time(e):
+        TextHora.value = e.control.value.strftime('%H:%M')
+        page.update()
+
+    # Campo de texto para la fecha
+    TextFecha = ft.TextField(
+                            label="Fecha",
+                            hint_text="Introduzca la fecha",
+                            bgcolor="white",
+                            border_color="white",
+                            label_style=ft.TextStyle(color="black", weight=ft.FontWeight.W_900),
+                            border=ft.InputBorder.NONE,
+                            filled=True,
+                            read_only=True,
+                            width=325 * 4,
+                        )
+    
+    TextFecha.value = reserva["fecha"]
+    
+    # Container para el campo de texto y botón para seleccionar la fecha
+    fecha_container = ft.Container(
+        content=ft.Column(
+            [
+                ft.Row(
+                    [
+                        TextFecha,
+                        ft.ElevatedButton(
+                            "Seleccionar Fecha",
+                            icon=ft.icons.CALENDAR_MONTH,
+                            width=225,
+                            height=48,
+                            style=ft.ButtonStyle(
+                                shape=ft.RoundedRectangleBorder(radius=0),
+                            ),
+                            on_click=lambda e: page.open(
+                                ft.DatePicker(
+                                    first_date=datetime.date.today(),
+                                    last_date=datetime.datetime(year=2025, month=2, day=28),
+                                    on_change=handle_change_date,
+                                ),
+                            ),
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    )
+    
+    # Campo de texto para la hora
+    TextHora = ft.TextField(
+                    label="Hora",
+                    hint_text="Introduzca la hora",
+                    bgcolor="white",
+                    border_color="white",
+                    label_style=ft.TextStyle(color="black", weight=ft.FontWeight.W_900),
+                    border=ft.InputBorder.NONE,
+                    filled=True,
+                    read_only=True,
+                    width=325 * 4,
+                )
+    
+    TextHora.value = reserva["hora"]
+
+    # Container para el campo de texto y botón para seleccionar la fecha
+    hora_container = ft.Container(
+        content=ft.Column(
+            [
+                ft.Row(
+                    [
+                        TextHora,
+                        ft.ElevatedButton(
+                            "Seleccionar Hora",
+                            icon=ft.icons.ACCESS_TIME,
+                            width=225,
+                            height=48,
+                            style=ft.ButtonStyle(
+                                shape=ft.RoundedRectangleBorder(radius=0),
+                            ),
+                            on_click=lambda e: page.open(
+                                ft.TimePicker(
+                                    on_change=handle_change_time,
+                                ),
+                            ),
+                        ),
+                    ],
+                ),
+            ],
+        ),
+    )
+
     # Header
     ImageHeader = ft.Container(
         content=ft.Image(src="images/banner2.png", fit=ft.ImageFit.CONTAIN),
@@ -129,7 +165,7 @@ def eliminar_reserva(page: ft.Page, db):
                                     ft.ElevatedButton("Inicio", 
                                           width=466,
                                           height=79,
-                                          on_click=lambda e: back_to_first_view(page), 
+                                          on_click=lambda e: back_to_first_view(page, db), 
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
                                 ],
                             ),
@@ -185,33 +221,95 @@ def eliminar_reserva(page: ft.Page, db):
         bgcolor="#FFC061",
     )
 
-    TextNombre = ft.TextField(
-                    label="Nombre",
-                    hint_text="Introduzca su nombre",
+    TextMesa = ft.Dropdown(
+                    label="Mesa",
+                    hint_text="Seleciona la mesa",
                     bgcolor="white",
                     border_color="white",
                     label_style=ft.TextStyle(color="black", weight=ft.FontWeight.W_900),
                     border=ft.InputBorder.NONE,
                     filled=True,
+                    options=[
+                    ],
                 )
     
-    TextNombre.on_change = vaciar_tabla
+    TextMesa.options.append(ft.dropdown.Option(reserva["id_mesa"]))
 
-    TextTelefono = ft.TextField(
-                    label="Telefono",
-                    hint_text="Introduzca su telefono",
+    # Establecer el valor seleccionado automáticamente
+    TextMesa.value = reserva["id_mesa"]
+
+    TextNumPersonas = ft.TextField(
+                        label="Numero de personas",
+                        hint_text="Introduzca el numero de personas",
+                        bgcolor="white",
+                        border_color="white",
+                        label_style=ft.TextStyle(color="black", weight=ft.FontWeight.W_900),
+                        border=ft.InputBorder.NONE, 
+                        filled=True,
+                )
+    
+    TextNumPersonas.value = reserva["num_personas"]
+    
+    TextNota = ft.TextField(
+                    label="Nota",
+                    hint_text="Ubicación de la mesa",
                     bgcolor="white",
                     border_color="white",
                     label_style=ft.TextStyle(color="black", weight=ft.FontWeight.W_900),
-                    border=ft.InputBorder.NONE,
+                    border=ft.InputBorder.NONE, 
                     filled=True,
-                )  
+                    read_only=True,
+                )
+    
+    TextNota.value = reserva["notas"]
+    
+    def funcionNota(e):
+        """Si hay selecionada una mesa se muestra en el campo nota la ubicación de la mesa"""
+        if TextMesa.value:
+            # Obtener la nota de la mesa
+            ubicacion = mostrar_nota_mesa(db, TextMesa.value)
+            
+            # Verificar si se obtuvo una ubicación válida
+            if ubicacion:
+                TextNota.value = "Ubicación de la mesa: " + ubicacion
+            else:
+                TextNota.value = "Ubicación de la mesa no encontrada"
 
-    TextTelefono.on_change = vaciar_tabla
+        TextNota.update()
+    
+    def añadirMesasListado(e):
+        """Recibe la lista de mesas adecuadas al número de personas y las agrega a la lista desplegable de mesas"""
+        numMesas = mostrar_mesas(db, TextNumPersonas.value)
 
-    BotonBuscarReserva = ft.ElevatedButton(
-                            "Buscar reserva",
-                            on_click=lambda e: DatosClienteBuscarReservaEliminar(page, db, TextNombre, TextTelefono),
+        # Vaciar el campo de nota
+        TextNota.value = ""
+
+        # Actualizar el campo de nota
+        TextNota.update()
+
+        # Vaciar el listado de mesas
+        TextMesa.options.clear()
+
+        # Vaciar el campo de mesa
+        TextMesa.value = ""
+
+        # Actualizar el listado de mesas
+        TextMesa.update()
+
+        # Añadir las nuevas mesas
+        for mesa in numMesas:
+            TextMesa.options.append(ft.dropdown.Option(mesa))
+
+        # Actualizar el listado de mesas
+        TextMesa.update()
+
+    TextNumPersonas.on_change = añadirMesasListado
+    TextMesa.on_change = funcionNota
+    
+    BotonConfirmar = ft.ElevatedButton(
+                            "Guardar reserva",
+                            on_click=lambda e: ValidarReserva(page, db, TextMesa,TextFecha, TextHora, TextNumPersonas, TextNota, id_reserva),
+                            # on_click=lambda e: back_to_first_view(page),
                             style=ft.ButtonStyle(
                                 bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
                                 color={"": "white" , ft.ControlState.HOVERED: "black"}, 
@@ -221,20 +319,9 @@ def eliminar_reserva(page: ft.Page, db):
                             ),
                         )
     
-    BotonEliminarReservaCliente = ft.ElevatedButton(
-                            "Eliminar reserva",
-                            on_click=lambda e: EliminarReservaClient(page, db, TextNombre, TextTelefono, id_fila_eliminar),
-                            style=ft.ButtonStyle(
-                                bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
-                                color={"": "white" , ft.ControlState.HOVERED: "black"}, 
-                                side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, 
-                                padding=20, 
-                                text_style=ft.TextStyle(size=18)
-                            ),
-                        )
     BotonVolver = ft.ElevatedButton(
                             "Volver",
-                            on_click=lambda e: back_to_first_view(page, db),
+                            on_click=lambda e: back_to_second_view(page, db),
                             style=ft.ButtonStyle(
                                 bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
                                 color={"": "white" , ft.ControlState.HOVERED: "black"}, 
@@ -244,29 +331,31 @@ def eliminar_reserva(page: ft.Page, db):
                             ),
                         )
 
-    eliminar_reserva = ft.Container(
+    # Welcome Section
+    datos_reserva = ft.Container(
         width=315 * 5,
         content=ft.Column(
             [
-                ft.Text("Elimina tu reserva!", size=38, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
-                ft.Text("Por favor, introduzca los datos de contacto asociados a su reserva:", size=28, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
-                TextNombre,
-                TextTelefono,
-                TablaReservas2,
+                ft.Text("¡Realiza tu reserva!", size=38, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
+                ft.Text("Introduzca los datos de la reserva:", size=28, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
+                TextMesa,
+                fecha_container,
+                hora_container,
+                TextNumPersonas,
+                TextNota,
                 ft.Row(
-                    [   
-                        BotonBuscarReserva,
-                        BotonEliminarReservaCliente,
+                    [
+                        BotonConfirmar,
                         BotonVolver,
                     ],
                     alignment=ft.MainAxisAlignment.END,
                     spacing=10,
-                ),         
+                ),        
             ],
             spacing=15,
         ),
         padding=20,
-        )
+    )
 
     # Contenedor para la sección de contacto
     contact_section = ft.Container(
@@ -347,6 +436,7 @@ def eliminar_reserva(page: ft.Page, db):
     page.add(
         ImageHeader,
         Header,
-        eliminar_reserva,
+        datos_reserva,
         contact_section,
         )
+    
