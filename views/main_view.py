@@ -171,7 +171,7 @@ def main(page: ft.Page, db):
 
         # Importar la segunda vista
         from views.third_view import editar_reserva
-        editar_reserva(page)
+        editar_reserva(page, db)
 
     def navegar_eliminar_reserva(e):
         # Guardar el contenido de la primera vista
@@ -186,7 +186,7 @@ def main(page: ft.Page, db):
 
         # Importar la segunda vista
         from views.four_view import eliminar_reserva
-        eliminar_reserva(page)
+        eliminar_reserva(page, db)
 
     # Contenedor para las columnas de reservas
     reserva_section = ft.Container(

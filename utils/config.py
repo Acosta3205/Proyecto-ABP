@@ -1,2 +1,2 @@
 # Dirección de la base de datos
-mongo_uri = "mongodb://10.102.9.202:27017/"
+mongo_uri = "mongodb://localhost:27017/"

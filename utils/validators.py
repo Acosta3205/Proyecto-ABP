@@ -1,7 +1,11 @@
 import flet as ft
 from views.fifth_view import SelecionarMesaHora
 from views.main_view import main
+from views.third_view import TablaReservas,generar_tabla_reservas
+
 from services.crud_operations import insertar_datos_clientes, insertar_datos_reserva
+
+from services.querys import buscar_reservas
 
 def validar_nombre(nombre: str):
     """Comprueba que el nombre proporcionado tiene entre 1 y 20 caracteres y que no sean dígitos"""
@@ -134,6 +138,41 @@ def DatosCliente(page, db, nombre, telefono, email, direccion):
         page.dialog.open = False
         page.update()
 
+def DatosClienteBuscarReserva(page, db, nombre, telefono):
+    """Valida los campos del formulario y muestra errores si existen."""
+    errores = []
+
+    error_nombre = validar_nombre(nombre.value)
+    if error_nombre != None:        
+        errores.append(error_nombre)
+
+    error_telefono = validar_telefono(telefono.value)
+    if error_telefono != None:
+        errores.append(error_telefono)
+
+    if len(errores) > 0:
+        # Mostrar errores en un cuadro de diálogo
+        page.dialog = ft.AlertDialog(
+            title=ft.Text("Errores de Validación"),
+            content=ft.Text("\n".join(errores)),
+            actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
+        )
+        page.dialog.open = True
+        page.update()
+    else:
+        # Recoger la lista de reservas del cliente
+        reservas_cliente_lista = buscar_reservas(db, nombre.value, telefono.value)
+
+        # Generar la tabla de reservas
+        generar_tabla_reservas(page, TablaReservas, reservas_cliente_lista)
+
+        # Actualizar la página para reflejar los cambios
+        page.update()
+    
+    def close_dialog(page):
+        page.dialog.open = False
+        page.update()
+
 def ReservarMesa(page, db, NumMesa, NumPerson, Hora, Fecha, Notas):
     """Valida los campos del formulario y muestra errores si existen."""
     errores = []
@@ -188,3 +227,32 @@ def ReservarMesa(page, db, NumMesa, NumPerson, Hora, Fecha, Notas):
         page.controls.clear()
         page.update()
         main(page, db)
+
+def EliminarReservaCliente(page, db, nombre, telefono):
+    """Valida los campos del formulario y muestra errores si existen."""
+    errores = []
+
+    error_nombre = validar_nombre(nombre.value)
+    if error_nombre != None:        
+        errores.append(error_nombre)
+
+    error_telefono = validar_telefono(telefono.value)
+    if error_telefono != None:
+        errores.append(error_telefono)
+
+    if len(errores) > 0:
+        # Mostrar errores en un cuadro de diálogo
+        page.dialog = ft.AlertDialog(
+            title=ft.Text("Errores de Validación"),
+            content=ft.Text("\n".join(errores)),
+            actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
+        )
+        page.dialog.open = True
+        page.update()
+    else:
+        page.controls.clear()
+        page.update()
+    
+    def close_dialog(page):
+        page.dialog.open = False
+        page.update()

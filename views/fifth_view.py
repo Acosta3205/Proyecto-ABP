@@ -261,7 +261,7 @@ def SelecionarMesaHora(page: ft.Page, db):
         TextNota.update()
     
     def añadirMesasListado(e):
-        """Recibe la lista de mesas adecuadas al número de personas y las agrega a la lista de mesas"""
+        """Recibe la lista de mesas adecuadas al número de personas y las agrega a la lista desplegable de mesas"""
         numMesas = mostrar_mesas(db, TextNumPersonas.value)
 
         # Vaciar el campo de nota
@@ -320,7 +320,7 @@ def SelecionarMesaHora(page: ft.Page, db):
         content=ft.Column(
             [
                 ft.Text("¡Realiza tu reserva!", size=38, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
-                ft.Text("Por favor, la informacion de tu reserva:", size=28, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
+                ft.Text("Introduzca los datos de la reserva:", size=28, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
                 TextMesa,
                 fecha_container,
                 hora_container,
