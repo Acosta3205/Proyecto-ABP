@@ -1,28 +1,48 @@
+#-------------------------------------------------------
+# Importación de las librerías necesarias
+#-------------------------------------------------------
+
 import flet as ft
 
+#-------------------------------------------------------
+# Variables globales del la pagina del programa
+#-------------------------------------------------------
+
+# Variable global que almacenará el ID de la fila seleccionada en la tabla de reservas
 id_fila = None
 
+# Variable global que almacenará el contenido de la vista actual
 third_view_content = []
+
+#-------------------------------------------------------
+# Importación de las funciones necesarias
+#-------------------------------------------------------
 
 def DatosClienteBuscarReservaModificar(page, db, TextNombre, TextTelefono):
         from utils.validators import DatosClienteBuscarReservaModificar
         DatosClienteBuscarReservaModificar(page, db, TextNombre, TextTelefono)
 
-def buscar_reservas(db , TextNombre, TextTelefono):
-        from services.querys import buscar_reservas
-        buscar_reservas(db, TextNombre, TextTelefono)
-
 def IrAModificarReserva(page, db, TextNombre, TextTelefono, id_reserva):
         from utils.validators import IrAModificarReserva
         IrAModificarReserva(page, db, TextNombre, TextTelefono, id_reserva)
 
+# -------------------------------------------------------
+# Funciones principales de la vista
+# -------------------------------------------------------
+
 # Generar filas desde las reservas obtenidas
-def generar_tabla_reservas(page, tabla, reservas_cliente_lista):
-        """Rellena la tabla con las reservas obtenidas."""
-        # Limpia las filas actuales
+def generar_tabla_reservas_modificar(page, tabla, reservas_cliente_lista):
+        """Obtinene una lista que contendrá las consultas asociadas a los datos del cliente insertados en el formulario y rellena la tabla con la información de cada una de ellas.
+        
+        Args:
+            page (flet.Page): La página actual.
+            tabla (ft.DataTable): La tabla que se va a rellenar.
+            reservas_cliente_lista (list): Una lista que contendrá las consultas asociadas a los datos del cliente insertados en el formulario.
+        """
+        # Limpia las filas actuales de la tabla
         tabla.rows.clear()
 
-        # Agrega las nuevas filas
+        # Añade cada uno de los registros de la lista a la tabla
         for reserva in reservas_cliente_lista:
             fila = ft.DataRow(
                 data=reserva["id"],
@@ -43,25 +63,28 @@ def generar_tabla_reservas(page, tabla, reservas_cliente_lista):
         tabla.update()
 
 def seleccionar_fila(page, e):
-    """Al hacer clic en una de las filas de la tabla, la fila se marca como seleccionada."""
+    """Permite que al hacer clic en una de las filas de la tabla, la fila se marque como seleccionada.
+    
+    Args:
+        page (flet.Page): La página actual.
+        e (ft.DataRow): La fila seleccionada.
+    """
+    # Declarar una variable global para el ID de la fila, haciendo que sea accesible desde el resto del código
     global id_fila
-    # Obtener la fila seleccionada
+    
+    # Obtener la fila seleccionada de la tabla
     fila = e.control
 
-    # Obtener el ID de la fila
+    # Obtener el ID de la fila seleccionada
     row_id = fila.data
 
-    # Guardar el ID de la fila en una variable global
+    # Guardar el ID de la fila en la variable global
     id_fila = row_id
     
     # Invertir el estado de la fila
     fila.selected = not fila.selected
 
-    print("ID de la fila seleccionada:", row_id)
-
-    print("ID: ", id_fila)
-
-    # Mostrar un mensaje indicando la acción realizada
+    # Mostrar un mensaje indicando la acción realizada por el usuario
     page.snack_bar = ft.SnackBar(
             ft.Text(f"Reserva {'seleccionada' if fila.selected else 'deseleccionada'}: {row_id}"),
             open=True,
@@ -70,7 +93,7 @@ def seleccionar_fila(page, e):
     # Actualizar la página para reflejar los cambios
     page.update()
             
-# Crear la tabla
+# Crear la tabla TablaReservas
 TablaReservas = ft.DataTable(
     columns=[
         ft.DataColumn(ft.Text("Número de reserva")),
@@ -86,15 +109,30 @@ TablaReservas = ft.DataTable(
     width=1575,
 )
 
+# Función para vaciar las filas de la tabla
 def vaciar_tabla(e):
+    """Permite eliminar todos los registros almacenados en la tabla de reservas."""
     TablaReservas.rows.clear()
     TablaReservas.update()
 
 def editar_reserva(page: ft.Page, db):
+    """Genera una nueva vista que contendrá un formulario en el que el usuario deberá introducir sus datos de contacto que utilizó para realizar una reserva.
+       Luego, podrá realizar una búsqueda de todas las reservas realizadas por el usuario, las cuales podrá seleccionar para modificarlas en otra vista.
+
+    Args:
+        page (ft.Page): La página actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+    """
     page.title = "Sabores Únicos - Modificar reserva"
     page.route = "/ModificarReserva"
     
     def back_to_first_view(page: ft.Page, db):
+        """"Función para volver a la vista principal.
+
+        Args:
+            page (ft.Page): La página actual.
+            db (pymongo.database.Database): La base de datos de MongoDB.
+        """
         # Guardar el contenido de la segunda vista
         global third_view_content
         third_view_content = page.controls[:]
@@ -110,28 +148,21 @@ def editar_reserva(page: ft.Page, db):
 
         from views.main_view import main
         main(page, db)
-
-    def go_to_sixth_view(page: ft.Page, db):
-        # Guardar el contenido de la tercera vista
-        global third_view_content
-        third_view_content = page.controls[:]
-
-        # Limpia el contenido de la página actual
-        page.controls.clear()
-
-        # Actualiza la página para reflejar los cambios
-        page.update()
-
-        from views.sixth_view import ModificarReserva
-        ModificarReserva(page, db, id_fila)
          
-    # Header
+    #-------------------------------------------------------
+    # Encabezado
+    #------------------------------------------------------- 
+
     ImageHeader = ft.Container(
         content=ft.Image(src="images/banner2.png", fit=ft.ImageFit.CONTAIN),
         alignment=ft.alignment.center,
+        width=1920,
     )
 
+    #-------------------------------------------------------
     # Contenedor para la sección de contacto
+    #-------------------------------------------------------
+
     Header = ft.Container(
         content=ft.Column(
             [
@@ -141,7 +172,7 @@ def editar_reserva(page: ft.Page, db):
                             content=ft.Column(
                                 [
                                     ft.ElevatedButton("Inicio", 
-                                          width=466,
+                                          width=472,
                                           height=79,
                                           on_click=lambda e: back_to_first_view(page, db), 
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
@@ -149,46 +180,46 @@ def editar_reserva(page: ft.Page, db):
                             ),
                             padding=0,
                             alignment=ft.alignment.center,
-                            width=466,
+                            width=472,
                         ),
                         ft.Container(
                             content=ft.Column(
                                 [
                                     ft.ElevatedButton("Productos", 
-                                          width=466,
+                                          width=472,
                                           height=79,
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
                                 ],
                             ),
                             padding=0,
                             alignment=ft.alignment.center,
-                            width=466,
+                            width=472,
                         ),
                         ft.Container(
                             content=ft.Column(
                                 [
                                     ft.ElevatedButton("Nosotros", 
-                                          width=466,
+                                          width=472,
                                           height=79,
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
                                 ],
                             ),
                             padding=0,
                             alignment=ft.alignment.center,
-                            width=466,
+                            width=472,
                         ),
                         ft.Container(
                             content=ft.Column(
                                 [
                                     ft.ElevatedButton("Contacto", 
-                                          width=466,
+                                          width=472,
                                           height=79, 
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
                                 ],
                             ),
                             padding=0,
                             alignment=ft.alignment.center,
-                            width=466,
+                            width=472,
                         ),
                     ],
                     alignment=ft.alignment.center,
@@ -197,8 +228,15 @@ def editar_reserva(page: ft.Page, db):
         ),
         alignment=ft.alignment.center,
         bgcolor="#FFC061",
+        width=1920,
+        height=79, 
     )
 
+    #-------------------------------------------------------
+    # Campos de texto para el formulario
+    #-------------------------------------------------------
+
+    # Campo de texto para el nombre
     TextNombre = ft.TextField(
                     label="Nombre",
                     hint_text="Introduzca su nombre",
@@ -209,8 +247,10 @@ def editar_reserva(page: ft.Page, db):
                     filled=True,
                 )
     
+    # Asociar la función de vaciar_tabla a cuando se realiza un cambio en el campo TextNombre
     TextNombre.on_change = vaciar_tabla
 
+    # Campo de texto para el teléfono
     TextTelefono = ft.TextField(
                     label="Telefono",
                     hint_text="Introduzca su telefono",
@@ -220,9 +260,15 @@ def editar_reserva(page: ft.Page, db):
                     border=ft.InputBorder.NONE,
                     filled=True,
                 )
-    
+
+    # Asociar la función de vaciar_tabla a cuando se realiza un cambio en el campo TextTelefono    
     TextTelefono.on_change = vaciar_tabla
 
+    #-------------------------------------------------------
+    # Botones para el formulario
+    #-------------------------------------------------------
+
+    # Botón para buscar reservas en la base de datos
     BotonBuscarReserva = ft.ElevatedButton(
                             "Buscar reserva",
                             on_click=lambda e: DatosClienteBuscarReservaModificar(page, db, TextNombre, TextTelefono),
@@ -235,6 +281,7 @@ def editar_reserva(page: ft.Page, db):
                             ),
                         )
     
+    # Botón para pasar a la vista de modificar una reserva
     BotonModificarReserva = ft.ElevatedButton(
                             "Modificar reserva",
                             on_click=lambda e: IrAModificarReserva(page, db, TextNombre, TextTelefono, id_fila),
@@ -246,6 +293,8 @@ def editar_reserva(page: ft.Page, db):
                                 text_style=ft.TextStyle(size=18)
                             ),
                         )
+    
+    # Botón para regresar a la vista principal
     BotonVolver = ft.ElevatedButton(
                             "Volver",
                             on_click=lambda e: back_to_first_view(page, db),
@@ -257,6 +306,10 @@ def editar_reserva(page: ft.Page, db):
                                 text_style=ft.TextStyle(size=18)
                             ),
                         )
+
+    #--------------------------------------------------------------------
+    # Contenedor para la sección de inserción de los datos de contacto
+    #--------------------------------------------------------------------
 
     editar_reserva = ft.Container(
         width=315 * 5,
@@ -282,7 +335,10 @@ def editar_reserva(page: ft.Page, db):
         padding=20,
         )
 
-    # Contenedor para la sección de contacto
+    #---------------------------------------------------------------------
+    # Contenedor para la sección de datos de contacto del restaurante
+    #---------------------------------------------------------------------
+
     contact_section = ft.Container(
         content=ft.Column(
             [
@@ -298,7 +354,7 @@ def editar_reserva(page: ft.Page, db):
                                 ]
                             ),
                             alignment=ft.alignment.center,
-                            width=425,
+                            width=480,
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -310,7 +366,7 @@ def editar_reserva(page: ft.Page, db):
                                 ]
                             ),
                             alignment=ft.alignment.center,
-                            width=425, 
+                            width=480, 
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -322,7 +378,7 @@ def editar_reserva(page: ft.Page, db):
                                 ],
                             ),
                             alignment=ft.alignment.center,
-                            width=425,
+                            width=480,
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -334,19 +390,18 @@ def editar_reserva(page: ft.Page, db):
                                 ]
                             ),
                             alignment=ft.alignment.center,
-                            width=425,
+                            width=480,
                         ),
                     ],
                     alignment=ft.alignment.center,
-                    spacing=40,
                 ),
                 ft.Row(
                     [
                         ft.Container(
                             content=ft.Text("© 2024 Sabores Únicos. Todos los derechos reservados.", size=14, weight=ft.FontWeight.W_400),
                             alignment=ft.alignment.center,
-                            padding=7,
-                            width=471 * 4,
+                            width=1920,
+                            bgcolor="#b8b8b8",
                         ),
                     ],
                     alignment=ft.alignment.center,
@@ -354,8 +409,8 @@ def editar_reserva(page: ft.Page, db):
             ],
         ),
         alignment=ft.alignment.center,
-        padding=5,
         bgcolor="#FFC061",
+        width=1920,
     )
 
     page.add(

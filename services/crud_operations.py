@@ -183,7 +183,7 @@ def insertar_datos_reserva(db, NumMesa, NumPerson, Hora, Fecha, Notas):
   except Exception as e:
     print(f"Error al insertar los datos en la base de datos: {e}")
 
-def GuardarReserva(db, NumMesa, NumPerson, Hora, Fecha, Notas, id_reserva):
+def GuardarReserva(db, NumMesa, Fecha, Hora, NumPerson, Notas, id_reserva):
   try:
     # Actualizar los datos en la colección "Reservas"
     db.reservas.update_one({"id": id_reserva}, {"$set": {"id_mesa": NumMesa, "fecha": Fecha, "hora": Hora, "num_personas": NumPerson, "estado": "Confirmada", "notas": Notas}})

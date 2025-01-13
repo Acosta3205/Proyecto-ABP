@@ -1,6 +1,16 @@
+#-------------------------------------------------------
+# Importación de las librerías necesarias
+#-------------------------------------------------------
+
+# Importar la libreria flet
 import flet as ft
 
+# Variable global para almacenar el contenido de las vista
 primera_view_content = []
+
+#-------------------------------------------------------
+# Funcion principal del programa
+#-------------------------------------------------------
 
 def main(page: ft.Page, db):
     page.title = "Restaurante Sabores Únicos"
@@ -19,13 +29,71 @@ def main(page: ft.Page, db):
         "Roboto": "http://themes.googleusercontent.com/static/fonts/robotoslab/v2/y7lebkjgREBJK96VQi37Zp0EAVxt0G0biEntp43Qt6E.ttf"
     }
 
-    # Header
+    #-------------------------------------------------------
+    # Funciones para manejar la navegacion entre las vistas
+    #-------------------------------------------------------
+    def navegar_realizar_reserva(e):
+        """Vacía el contenido de la página actual y carga el contenido de la segunda vista."""
+        # Guardar el contenido de la primera vista
+        global primera_view_content
+        primera_view_content = page.controls[:]
+
+        # Limpiar la pantalla
+        page.controls.clear()
+
+        # Ir a la segunda vista
+        page.update()
+
+        # Importar la segunda vista
+        from views.second_view import realizar_reserva
+        realizar_reserva(page, db)
+
+    def navegar_editar_reserva(e):
+        """Vacía el contenido de la página actual y carga el contenido de la tercera vista."""
+        # Guardar el contenido de la primera vista
+        global primera_view_content
+        primera_view_content = page.controls[:]
+
+        # Limpiar la pantalla
+        page.controls.clear()
+
+        # Ir a la segunda vista
+        page.update()
+
+        # Importar la segunda vista
+        from views.third_view import editar_reserva
+        editar_reserva(page, db)
+
+    def navegar_eliminar_reserva(e):
+        """Vacía el contenido de la página actual y carga el contenido de la cuarta vista."""
+        # Guardar el contenido de la primera vista
+        global primera_view_content
+        primera_view_content = page.controls[:]
+
+        # Limpiar la pantalla
+        page.controls.clear()
+
+        # Ir a la segunda vista
+        page.update()
+
+        # Importar la segunda vista
+        from views.four_view import eliminar_reserva
+        eliminar_reserva(page, db)
+
+    #-------------------------------------------------------
+    # Variables globales del la pagina del programa
+    #-------------------------------------------------------
+
+    # Cabecera
+    #-------------
     header = ft.Container(
         content=ft.Image(src="images/logo.png", fit=ft.ImageFit.CONTAIN),
         alignment=ft.alignment.center,
+        width=1920,
     )
 
-    # Welcome Section
+    # Bienvenida de la pagina y informacion sobre el restaurante
+    #-----------------------------------------------------------------
     welcome_section = ft.Container(width=315 * 5,
         content=ft.Column(
             [
@@ -46,9 +114,10 @@ def main(page: ft.Page, db):
         padding=20,
     )                    
 
-    # Images Section
-    
+    # Carrusel de imágenes
+    # ----------------------
     # Carrusel de imágenes de pasta
+    # ----------------------------------
     images_pasta = ft.Row(width=309 * 5, wrap=False, scroll="auto")
     for i in range(0, 9):
         images_pasta.controls.append(
@@ -63,6 +132,7 @@ def main(page: ft.Page, db):
         )
 
     # Carrusel de imágenes de tacos
+    # ----------------------------------
     images_tacos = ft.Row(width=309 * 5, wrap=False, scroll="auto")
     for i in range(1, 10):
         images_tacos.controls.append(
@@ -77,6 +147,7 @@ def main(page: ft.Page, db):
         )
 
     # Carrusel de imágenes de postres
+    # ----------------------------------
     images_postres = ft.Row(width=309 * 5, wrap=False, scroll="auto", on_scroll_interval=100)
     for i in range(0, 9):
         images_postres.controls.append(
@@ -90,7 +161,8 @@ def main(page: ft.Page, db):
             )
         )
 
-    # Contenedor principal alineado al centro
+    # Contenedor principal donde van los carruseles
+    # ------------------------------------------------
     container = ft.Column(
         [
             # Contenedores para los tacos
@@ -142,53 +214,10 @@ def main(page: ft.Page, db):
         alignment=ft.MainAxisAlignment.CENTER,
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
     )
-
-    def navegar_realizar_reserva(e):
-        # Guardar el contenido de la primera vista
-        global primera_view_content
-        primera_view_content = page.controls[:]
-
-        # Limpiar la pantalla
-        page.controls.clear()
-
-        # Ir a la segunda vista
-        page.update()
-
-        # Importar la segunda vista
-        from views.second_view import realizar_reserva
-        realizar_reserva(page, db)
-
-    def navegar_editar_reserva(e):
-        # Guardar el contenido de la primera vista
-        global primera_view_content
-        primera_view_content = page.controls[:]
-
-        # Limpiar la pantalla
-        page.controls.clear()
-
-        # Ir a la segunda vista
-        page.update()
-
-        # Importar la segunda vista
-        from views.third_view import editar_reserva
-        editar_reserva(page, db)
-
-    def navegar_eliminar_reserva(e):
-        # Guardar el contenido de la primera vista
-        global primera_view_content
-        primera_view_content = page.controls[:]
-
-        # Limpiar la pantalla
-        page.controls.clear()
-
-        # Ir a la segunda vista
-        page.update()
-
-        # Importar la segunda vista
-        from views.four_view import eliminar_reserva
-        eliminar_reserva(page, db)
-
-    # Contenedor para las columnas de reservas
+    
+    # Contenedor donde van las opciones de reserva
+    #-------------------------------------------------------
+   
     reserva_section = ft.Container(
         content=ft.Row(
             [
@@ -233,6 +262,8 @@ def main(page: ft.Page, db):
     )
 
     # Contenedor para la sección de contacto
+    #-------------------------------------------------------
+    
     contact_section = ft.Container(
         content=ft.Column(
             [
@@ -248,7 +279,7 @@ def main(page: ft.Page, db):
                                 ]
                             ),
                             alignment=ft.alignment.center,
-                            width=425,
+                            width=480,
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -260,7 +291,7 @@ def main(page: ft.Page, db):
                                 ]
                             ),
                             alignment=ft.alignment.center,
-                            width=425, 
+                            width=480, 
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -272,7 +303,7 @@ def main(page: ft.Page, db):
                                 ],
                             ),
                             alignment=ft.alignment.center,
-                            width=425,
+                            width=480,
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -284,19 +315,18 @@ def main(page: ft.Page, db):
                                 ]
                             ),
                             alignment=ft.alignment.center,
-                            width=425,
+                            width=480,
                         ),
                     ],
                     alignment=ft.alignment.center,
-                    spacing=40,
                 ),
                 ft.Row(
                     [
                         ft.Container(
                             content=ft.Text("© 2024 Sabores Únicos. Todos los derechos reservados.", size=14, weight=ft.FontWeight.W_400),
                             alignment=ft.alignment.center,
-                            padding=7,
-                            width=471 * 4,
+                            width=1920,
+                            bgcolor="#b8b8b8",
                         ),
                     ],
                     alignment=ft.alignment.center,
@@ -304,11 +334,14 @@ def main(page: ft.Page, db):
             ],
         ),
         alignment=ft.alignment.center,
-        padding=5,
         bgcolor="#FFC061",
+        width=1920,
     )
-
-    # Layout
+    
+    #-------------------------------------------------------
+    # Agregar los contenedores a la pantalla
+    #-------------------------------------------------------
+    
     page.add(
         header,
         welcome_section,

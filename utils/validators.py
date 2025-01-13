@@ -1,15 +1,29 @@
+#-------------------------------------------------------
+# Importación de las librerías necesarias
+#-------------------------------------------------------
 import flet as ft
+
+#-------------------------------------------------------
+# Importación de las vistas necesarias
+#-------------------------------------------------------
 from views.fifth_view import SelecionarMesaHora
 from views.main_view import main
-from views.third_view import TablaReservas, generar_tabla_reservas
-from views.four_view import TablaReservas2
+from views.third_view import TablaReservas, generar_tabla_reservas_modificar
+from views.four_view import TablaReservas2, generar_tabla_reservas_eliminar
 from views.sixth_view import ModificarReserva
 
-
+#-------------------------------------------------------
+# Importación de las consultas necesarias
+#-------------------------------------------------------
 from services.crud_operations import insertar_datos_clientes, insertar_datos_reserva , GuardarReserva
-
 from services.querys import buscar_reservas, EliminarReservaSelecionada
 
+#-----------------------------------------------------------------
+# Validaciones de todos los campos nesesarios para el programa 
+#-----------------------------------------------------------------
+
+# Validar el nombre
+# --------------------
 def validar_nombre(nombre: str):
     """Comprueba que el nombre proporcionado tiene entre 1 y 20 caracteres y que no sean dígitos"""
     while True:
@@ -26,6 +40,8 @@ def validar_nombre(nombre: str):
         else:
             return None                        
 
+# Validar el telefono
+# -----------------------
 def validar_telefono(telefono: int):
     """Comprueba que el teléfono proporcionado tiene 9 digitos"""
     while True:
@@ -42,6 +58,8 @@ def validar_telefono(telefono: int):
         else:
             return None
 
+# Validar el email
+# --------------------
 def validar_email(email: str):
     """Comprueba que el email proporcionado tiene el formato correo@dominio.com"""
     # Comprobar que el email no este vacío
@@ -59,7 +77,9 @@ def validar_email(email: str):
     # Si el email es correcto, sale del bucle
     else:
         return None
-    
+
+# Validar la direccion
+# ------------------------
 def validar_direccion(direccion: str):
     """Comprueba que la direccion proporcionada no este vacio"""
     # Comprobar que la direccion no este vacia
@@ -69,13 +89,17 @@ def validar_direccion(direccion: str):
     else:
         return None
 
+# Validar el numero de mesa 
+# -----------------------------
 def Validar_num_mesa(NumMesa: int):
     """Comprobar que el campo solo contenga numeros"""
     if not NumMesa:
         return "Debe seleccionar una mesa para la reserva."
     else:
         return None
-    
+
+# Validar el numero de personas
+# ---------------------------------
 def Validar_num_personas(NumPerson):
     """Comprobar que el campo solo contenga numeros"""
     if NumPerson == "":
@@ -84,7 +108,9 @@ def Validar_num_personas(NumPerson):
         return "El campo de personas solo puede contener numeros."
     else:
         return None
-    
+
+# Validar la hora
+# -------------------
 def ValidarHora(Hora: str):
     """"Comprobar que la hora esté en el rango de 8:00 a 20:00"""
     if Hora == "":
@@ -93,37 +119,56 @@ def ValidarHora(Hora: str):
         return "El horario de reservas es de 8:00 a 20:00"
     else:
         return None
-    
+
+# Validar la fecha
+# ----------------------
 def ValidarFecha(Fecha: str):
     """"Comprobar que la fecha no este vacia"""
     if Fecha == "":
         return "Introduzca una fecha para la reserva"
     else:
         return None
-    
+
+# Validar las notas
+# ----------------------
 def ValidarNotas(Notas: str):
     """"Comprobar que la nota no este vacia"""
     if Notas == "":
         return "El campo de notas no puede estar vacio. Debes selecionar una mesa"
     else:
         return None
-    
+
+#-----------------------------------------------------------------
+# Funciones para el manejo de los cuadros de diálogo
+#-----------------------------------------------------------------
+
+# Función para cerrar el cuadro de diálogo
+# --------------------------------------------
 def close_dialog(page):
         page.dialog.open = False
         page.update()
 
+# Función para cerrar el cuadro de diálogo y volver a la pantalla principal
+# -----------------------------------------------------------------------------
 def cerrar_reserva(page, db):
     page.dialog.open = False
     page.controls.clear()
     page.update()
     main(page, db)
 
+
+#--------------------------------------------------------------------------------
+# Funciones para el manejo de las validaciones de los botones de las vistas
+#------------------------------------------------------------------------------
+
+# Función para validar los datos del cliente y enviarlos a la base de datos
+# -----------------------------------------------------------------------------
 def DatosCliente(page, db, nombre, telefono, email, direccion):
-    """Valida los campos del formulario y muestra errores si existen."""
+    """Valida los campos del formulario y muestra errores si son incorrectos."""
     errores = []
 
     error_nombre = validar_nombre(nombre.value)
-    if error_nombre != None:        
+    if error_nombre != None: 
         errores.append(error_nombre)
 
     error_telefono = validar_telefono(telefono.value)
@@ -139,7 +184,7 @@ def DatosCliente(page, db, nombre, telefono, email, direccion):
         errores.append(error_direccion)
 
     if len(errores) > 0:
-        # Mostrar errores en un cuadro de diálogo
+        # Mostrar errores en un cuadro de diálogo si los campos son incorrectos
         page.dialog = ft.AlertDialog(
             title=ft.Text("Oops!, ha ocurrido un error"),
             content=ft.Text("\n".join(errores)),
@@ -147,10 +192,14 @@ def DatosCliente(page, db, nombre, telefono, email, direccion):
         )
         page.dialog.open = True
         page.update()
+
+    # Si los campos son correctos, insertar los datos del cliente en la base de datos llamado a la funcion en el archivo "Querys.py"
     else:
         page.controls.clear()
         page.update()
+        # Funcion de la quinta vista principal del archivo fifth_view.py
         SelecionarMesaHora(page, db)
+        # Funcion para insertar los datos en la base de datos del archivo "Querys.py"
         insertar_datos_clientes(page, db, nombre.value, telefono.value, email.value, direccion.value)
 
 def DatosClienteBuscarReservaModificar(page, db, nombre, telefono):
@@ -177,9 +226,18 @@ def DatosClienteBuscarReservaModificar(page, db, nombre, telefono):
     else:
         # Recoger la lista de reservas del cliente
         reservas_cliente_lista = buscar_reservas(db, nombre.value, telefono.value)
-    
-        # Generar la tabla de reservas
-        generar_tabla_reservas(page, TablaReservas, reservas_cliente_lista)
+
+        if len(reservas_cliente_lista) == 0:
+            # Mostrar un mensaje indicando que no hay reservas
+            page.dialog = ft.AlertDialog(
+                title=ft.Text("Oops!, ha ocurrido un error"),
+                content=ft.Text("No se han encontrado reservas asociadas con el cliente ingresado. Por favor, inténtelo de nuevo."),
+                actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
+            )
+            page.dialog.open = True
+        else:
+            # Generar la tabla de reservas
+            generar_tabla_reservas_modificar(page, TablaReservas, reservas_cliente_lista)
 
         # Actualizar la página para reflejar los cambios
         page.update()
@@ -208,9 +266,18 @@ def DatosClienteBuscarReservaEliminar(page, db, nombre, telefono):
     else:
         # Recoger la lista de reservas del cliente
         reservas_cliente_lista = buscar_reservas(db, nombre.value, telefono.value)
-    
-        # Generar la tabla de reservas
-        generar_tabla_reservas(page, TablaReservas2, reservas_cliente_lista)
+
+        if len(reservas_cliente_lista) == 0:
+            # Mostrar un mensaje indicando que no hay reservas
+            page.dialog = ft.AlertDialog(
+                title=ft.Text("Oops!, ha ocurrido un error"),
+                content=ft.Text("No se han encontrado reservas asociadas con el cliente ingresado. Por favor, inténtelo de nuevo."),
+                actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
+            )
+            page.dialog.open = True
+        else:
+            # Generar la tabla de reservas
+            generar_tabla_reservas_eliminar(page, TablaReservas2, reservas_cliente_lista)
 
         # Actualizar la página para reflejar los cambios
         page.update()
@@ -283,8 +350,6 @@ def EliminarReservaCliente(page, db, nombre, telefono, id_fila_eliminar):
         page.update()
         return
 
-
-    print("Validators: ", id_fila_eliminar)
     if id_fila_eliminar is None:
         page.dialog = ft.AlertDialog(
             title=ft.Text("Seleccione una reserva"),
@@ -343,8 +408,6 @@ def IrAModificarReserva(page, db, nombre, telefono, id_fila_eliminar):
         page.update()
         return
     
-    print("ID Fila Recogida: ", id_fila_eliminar)
-
     if id_fila_eliminar is None:
         page.dialog = ft.AlertDialog(
             title=ft.Text("Seleccione una reserva"),
@@ -367,18 +430,18 @@ def ValidarReserva(page, db, NumMesa, Fecha, Hora, NumPerson, Notas, id_reserva)
     error_NumMesa = Validar_num_mesa(NumMesa)
     if error_NumMesa != None:
         errores.append(error_NumMesa)
-    
-    error_NumPerson = Validar_num_personas(NumPerson)
-    if error_NumPerson != None:
-        errores.append(error_NumPerson)
-
-    error_Hora = ValidarHora(Hora)
-    if error_Hora != None:
-        errores.append(error_Hora)
 
     error_Fecha = ValidarFecha(Fecha)
     if error_Fecha != None:
         errores.append(error_Fecha)
+    
+    error_Hora = ValidarHora(Hora)
+    if error_Hora != None:
+        errores.append(error_Hora)
+
+    error_NumPerson = Validar_num_personas(NumPerson)
+    if error_NumPerson != None:
+        errores.append(error_NumPerson)
 
     error_Notas = ValidarNotas(Notas)
     if error_Notas != None:

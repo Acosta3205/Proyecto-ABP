@@ -1,3 +1,6 @@
+#-------------------------------------------------------
+# Importación de las librerías necesarias
+#-------------------------------------------------------
 import datetime
 import locale
 import flet as ft
@@ -23,7 +26,9 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
     # Establece el idioma en español
     locale.setlocale(locale.LC_TIME, 'es_ES')
 
-    def back_to_second_view(page: ft.Page, db):
+    # Función para volver a la vista anterior
+    def back_to_third_view(page: ft.Page, db):
+        """Vacía el contenido de la página actual y carga el contenido de la tercera vista."""
         # Guardar el contenido de la segunda vista
         global sixth_view_content
         sixth_view_content = page.controls[:]
@@ -34,10 +39,15 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
         # Actualiza la página para reflejar los cambios
         page.update()
 
-        from views.second_view import realizar_reserva
-        realizar_reserva(page, db)
+        from views.third_view import editar_reserva, TablaReservas
+        TablaReservas.rows.clear()
+        editar_reserva(page, db)
+
+    
+    # Funciones para manejar la navegación entre las vistas
     
     def back_to_first_view(page: ft.Page, db):
+        """Vacía el contenido de la página actual y carga el contenido de la primera vista."""
         # Guardar el contenido de la segunda vista
         global second_view_content
         second_view_content = page.controls[:]
@@ -51,16 +61,20 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
         from views.main_view import main
         main(page, db)
 
+    # Funciones para manejar el formato de la fecha y hora
+
     # Maneja el cambio de fecha
     def handle_change_date(e):
+        """"Formatea la fecha como día de mes de año (02 de Mayo de 2024)."""
         TextFecha.value = e.control.value.strftime('%d de %B %Y')
         page.update()
     
     # Maneja el cambio de hora
     def handle_change_time(e):
+        """Formatea la hora como HH:MM (19:25)."""
         TextHora.value = e.control.value.strftime('%H:%M')
         page.update()
-
+    
     # Campo de texto para la fecha
     TextFecha = ft.TextField(
                             label="Fecha",
@@ -74,6 +88,7 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
                             width=325 * 4,
                         )
     
+    # Asociar el valor del campo de texto con el valor de la fecha obtenido de la reserva consultada    
     TextFecha.value = reserva["fecha"]
     
     # Container para el campo de texto y botón para seleccionar la fecha
@@ -118,9 +133,10 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
                     width=325 * 4,
                 )
     
+    # Asociar el valor del campo de texto con el valor de la hora obtenido de la reserva consultada    
     TextHora.value = reserva["hora"]
 
-    # Container para el campo de texto y botón para seleccionar la fecha
+    # Container para el campo de texto y botón para seleccionar la hora
     hora_container = ft.Container(
         content=ft.Column(
             [
@@ -151,6 +167,7 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
     ImageHeader = ft.Container(
         content=ft.Image(src="images/banner2.png", fit=ft.ImageFit.CONTAIN),
         alignment=ft.alignment.center,
+        width=1920,
     )
 
     # Contenedor para la sección de contacto
@@ -163,7 +180,7 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
                             content=ft.Column(
                                 [
                                     ft.ElevatedButton("Inicio", 
-                                          width=466,
+                                          width=472,
                                           height=79,
                                           on_click=lambda e: back_to_first_view(page, db), 
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
@@ -171,46 +188,46 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
                             ),
                             padding=0,
                             alignment=ft.alignment.center,
-                            width=466,
+                            width=472,
                         ),
                         ft.Container(
                             content=ft.Column(
                                 [
                                     ft.ElevatedButton("Productos", 
-                                          width=466,
+                                          width=472,
                                           height=79,
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
                                 ],
                             ),
                             padding=0,
                             alignment=ft.alignment.center,
-                            width=466,
+                            width=472,
                         ),
                         ft.Container(
                             content=ft.Column(
                                 [
                                     ft.ElevatedButton("Nosotros", 
-                                          width=466,
+                                          width=472,
                                           height=79,
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
                                 ],
                             ),
                             padding=0,
                             alignment=ft.alignment.center,
-                            width=466,
+                            width=472,
                         ),
                         ft.Container(
                             content=ft.Column(
                                 [
                                     ft.ElevatedButton("Contacto", 
-                                          width=466,
+                                          width=472,
                                           height=79, 
                                           style=ft.ButtonStyle(bgcolor={"": "#FFC061", ft.ControlState.HOVERED: "black"}, color={"": "black", ft.ControlState.HOVERED: "white"}, side={"": ft.BorderSide(width=0, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="#FFC061")}, shape=ft.RoundedRectangleBorder(radius=0), padding=20, text_style=ft.TextStyle(size=32, weight=ft.FontWeight.W_600))),
                                 ],
                             ),
                             padding=0,
                             alignment=ft.alignment.center,
-                            width=466,
+                            width=472,
                         ),
                     ],
                     alignment=ft.alignment.center,
@@ -219,6 +236,8 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
         ),
         alignment=ft.alignment.center,
         bgcolor="#FFC061",
+        width=1920,
+        height=79, 
     )
 
     TextMesa = ft.Dropdown(
@@ -321,7 +340,7 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
     
     BotonVolver = ft.ElevatedButton(
                             "Volver",
-                            on_click=lambda e: back_to_second_view(page, db),
+                            on_click=lambda e: back_to_third_view(page, db),
                             style=ft.ButtonStyle(
                                 bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, 
                                 color={"": "white" , ft.ControlState.HOVERED: "black"}, 
@@ -336,8 +355,8 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
         width=315 * 5,
         content=ft.Column(
             [
-                ft.Text("¡Realiza tu reserva!", size=38, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
-                ft.Text("Introduzca los datos de la reserva:", size=28, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
+                ft.Text("Modifica tu reserva!", size=38, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
+                ft.Text("Introduzca los nuevos datos de la reserva:", size=28, weight=ft.FontWeight.W_600, color="#FFC061", font_family="Kanit"),
                 TextMesa,
                 fecha_container,
                 hora_container,
@@ -357,7 +376,10 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
         padding=20,
     )
 
-    # Contenedor para la sección de contacto
+    #---------------------------------------------------------------------
+    # Contenedor para la sección de datos de contacto del restaurante
+    #---------------------------------------------------------------------
+
     contact_section = ft.Container(
         content=ft.Column(
             [
@@ -373,7 +395,7 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
                                 ]
                             ),
                             alignment=ft.alignment.center,
-                            width=425,
+                            width=480,
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -385,7 +407,7 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
                                 ]
                             ),
                             alignment=ft.alignment.center,
-                            width=425, 
+                            width=480, 
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -397,7 +419,7 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
                                 ],
                             ),
                             alignment=ft.alignment.center,
-                            width=425,
+                            width=480,
                         ),
                         ft.Container(
                             content=ft.Column(
@@ -409,19 +431,18 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
                                 ]
                             ),
                             alignment=ft.alignment.center,
-                            width=425,
+                            width=480,
                         ),
                     ],
                     alignment=ft.alignment.center,
-                    spacing=40,
                 ),
                 ft.Row(
                     [
                         ft.Container(
                             content=ft.Text("© 2024 Sabores Únicos. Todos los derechos reservados.", size=14, weight=ft.FontWeight.W_400),
                             alignment=ft.alignment.center,
-                            padding=7,
-                            width=471 * 4,
+                            width=1920,
+                            bgcolor="#b8b8b8",
                         ),
                     ],
                     alignment=ft.alignment.center,
@@ -429,8 +450,8 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
             ],
         ),
         alignment=ft.alignment.center,
-        padding=5,
         bgcolor="#FFC061",
+        width=1920,
     )
 
     page.add(

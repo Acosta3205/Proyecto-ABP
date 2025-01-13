@@ -61,16 +61,22 @@ def buscar_reservas(db, nombre, telefono):
     # Buscar el ID del cliente
     clientes = db.clientes
     reservas = db.reservas
-    id_cliente = clientes.find_one({"nombre": nombre, "telefono": telefono})["id"]
+    try:
+        # Obtener el ID del cliente
+        id_cliente = clientes.find_one({"nombre": nombre, "telefono": telefono})["id"]
+        
+        # Buscar las reservas relacionadas con el ID del cliente
+        reservas_cliente = reservas.find({"id_cliente": id_cliente})
 
-    # Buscar las reservas relacionadas con el ID del cliente
-    reservas_cliente = reservas.find({"id_cliente": id_cliente})
+        # Convertir la consulta a una lista de Python
+        reservas_cliente_lista = list(reservas_cliente)
 
-    # Convertir la consulta a una lista de Python
-    reservas_cliente_lista = list(reservas_cliente)
-
-    # Devolver la lista de reservas
-    return reservas_cliente_lista
+        # Devolver la lista de reservas
+        return reservas_cliente_lista
+    
+    # Si no se encuentra el cliente, devolver una lista vacía
+    except TypeError:
+        return []
 
 def comprobar_cliente_existente(db, nombre, telefono, email, direccion):
     """Comprueba si un cliente ya existe en la base de datos."""
@@ -94,6 +100,5 @@ def CargarDatosReserva(page, db, id_reserva):
     # Busca la reserva por su ID y obtiene los datos
     reserva = reservas.find_one({"id": id_reserva})
 
-    print(reserva)
-
+    # Devuelve la reserva en un diccionario
     return reserva
