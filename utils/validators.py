@@ -25,7 +25,14 @@ from services.querys import buscar_reservas, EliminarReservaSelecionada
 # Validar el nombre
 # --------------------
 def validar_nombre(nombre: str):
-    """Comprueba que el nombre proporcionado tiene entre 1 y 20 caracteres y que no sean dígitos"""
+    """Comprueba que el nombre proporcionado tiene entre 1 y 20 caracteres y que no sean dígitos.
+    
+    Args:
+        nombre (str): El nombre del cliente.
+
+    Returns:
+        str: None si el nombre es correcto, un mensaje de error si no lo es.
+    """
     while True:
         # Comprobar que el nombre no este vacio
         if len(nombre) == 0:
@@ -43,7 +50,14 @@ def validar_nombre(nombre: str):
 # Validar el telefono
 # -----------------------
 def validar_telefono(telefono: int):
-    """Comprueba que el teléfono proporcionado tiene 9 digitos"""
+    """Comprueba que el teléfono proporcionado tiene 9 digitos.
+    
+    Args:
+        telefono (int): El telefono del cliente.
+
+    Returns:
+        str: None si el telefono es correcto, un mensaje de error si no lo es.
+    """
     while True:
         # Comprobar que el telefono no este vacio
         if len(telefono) == 0:
@@ -61,7 +75,14 @@ def validar_telefono(telefono: int):
 # Validar el email
 # --------------------
 def validar_email(email: str):
-    """Comprueba que el email proporcionado tiene el formato correo@dominio.com"""
+    """Comprueba que el email proporcionado tiene el formato correo@dominio.com.
+    
+    Args:
+        email (str): El email del cliente.
+
+    Returns:
+        str: None si el email es correcto, un mensaje de error si no lo es.
+    """
     # Comprobar que el email no este vacío
     if len(email) == 0:
         return "El email no puede estar vacío. Por favor, introduzca de nuevo el email."
@@ -81,7 +102,14 @@ def validar_email(email: str):
 # Validar la direccion
 # ------------------------
 def validar_direccion(direccion: str):
-    """Comprueba que la direccion proporcionada no este vacio"""
+    """Comprueba que la direccion proporcionada no este vacio.
+    
+    Args:
+        direccion (str): La direccion del cliente.
+
+    Returns:
+        str: None si la direccion es correcta, un mensaje de error si no lo es.
+    """
     # Comprobar que la direccion no este vacia
     if len(direccion) == 0:
         return "La direccion no puede estar vacia."
@@ -92,7 +120,14 @@ def validar_direccion(direccion: str):
 # Validar el numero de mesa 
 # -----------------------------
 def Validar_num_mesa(NumMesa: int):
-    """Comprobar que el campo solo contenga numeros"""
+    """Comprobar que el campo solo contenga numeros.
+    
+    Args:
+        NumMesa (int): El numero de mesa.
+
+    Returns:
+        str: None si el numero de mesa es correcto, un mensaje de error si no lo es.
+    """
     if not NumMesa:
         return "Debe seleccionar una mesa para la reserva."
     else:
@@ -101,7 +136,14 @@ def Validar_num_mesa(NumMesa: int):
 # Validar el numero de personas
 # ---------------------------------
 def Validar_num_personas(NumPerson):
-    """Comprobar que el campo solo contenga numeros"""
+    """Comprobar que el campo solo contenga numeros.
+    
+    Args:
+        NumPerson (int): El numero de personas.
+
+    Returns:
+        str: None si el numero de personas es correcto, un mensaje de error si no lo es.
+    """
     if NumPerson == "":
         return "Introduzca el numero de personas para la reserva"
     elif not NumPerson.isdigit():
@@ -112,7 +154,14 @@ def Validar_num_personas(NumPerson):
 # Validar la hora
 # -------------------
 def ValidarHora(Hora: str):
-    """"Comprobar que la hora esté en el rango de 8:00 a 20:00"""
+    """"Comprobar que la hora esté en el rango de 8:00 a 20:00.
+    
+    Args:
+        Hora (str): La hora de la reserva.
+
+    Returns:
+        str: None si la hora es correcta, un mensaje de error si no lo es.
+    """
     if Hora == "":
         return "Introduzca una hora para la reserva"
     elif int(Hora.split(":")[0]) < 8 or int(Hora.split(":")[0]) > 20:
@@ -123,7 +172,14 @@ def ValidarHora(Hora: str):
 # Validar la fecha
 # ----------------------
 def ValidarFecha(Fecha: str):
-    """"Comprobar que la fecha no este vacia"""
+    """"Comprobar que la fecha no este vacia.
+    
+    Args:
+        Fecha (str): La fecha de la reserva.
+
+    Returns:
+        str: None si la fecha es correcta, un mensaje de error si no lo es.
+    """
     if Fecha == "":
         return "Introduzca una fecha para la reserva"
     else:
@@ -132,7 +188,14 @@ def ValidarFecha(Fecha: str):
 # Validar las notas
 # ----------------------
 def ValidarNotas(Notas: str):
-    """"Comprobar que la nota no este vacia"""
+    """"Comprobar que la nota no este vacia.
+    
+    Args:
+        Notas (str): Las notas de la reserva.
+
+    Returns:
+        str: None si la nota es correcta, un mensaje de error si no lo es.
+    """
     if Notas == "":
         return "El campo de notas no puede estar vacio. Debes selecionar una mesa"
     else:
@@ -145,15 +208,33 @@ def ValidarNotas(Notas: str):
 # Función para cerrar el cuadro de diálogo
 # --------------------------------------------
 def close_dialog(page):
+    """Función para cerrar el cuadro de diálogo.
+    
+    Args:
+        page (ft.Page): La pagina actual.
+    """
+    # Si el cuadro de diálogo existe, lo cerramos
+    if page.dialog != None:
         page.dialog.open = False
+        # Actualizamos la pantalla
         page.update()
 
 # Función para cerrar el cuadro de diálogo y volver a la pantalla principal
 # -----------------------------------------------------------------------------
 def cerrar_reserva(page, db):
+    """Función para cerrar el cuadro de diálogo y volver a la pantalla principal.
+    
+    Args:
+        page (ft.Page): La pagina actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+    """
+    # Cerrar el cuadro de diálogo
     page.dialog.open = False
+    # Vaciar los controles de la pantalla
     page.controls.clear()
+    # Actualizar la pantalla
     page.update()
+    # Volver a la pantalla principal
     main(page, db)
 
 
@@ -164,33 +245,55 @@ def cerrar_reserva(page, db):
 # Función para validar los datos del cliente y enviarlos a la base de datos
 # -----------------------------------------------------------------------------
 def DatosCliente(page, db, nombre, telefono, email, direccion):
-    """Valida los campos del formulario y muestra errores si son incorrectos."""
+    """Valida los campos del formulario y muestra errores si son incorrectos.
+    
+    Args:
+        page (ft.Page): La pagina actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+        nombre (ft.TextField): El campo de nombre.
+        telefono (ft.TextField): El campo de telefono.
+        email (ft.TextField): El campo de email.
+        direccion (ft.TextField): El campo de direccion.
+    
+    """
+    # Listado de errores producidos trás las validaciones
     errores = []
 
+    # Comprobar que el Nombre sea correcto
     error_nombre = validar_nombre(nombre.value)
+    # Si el Nombre no es correcto, se agrega al listado el error producido
     if error_nombre != None: 
         errores.append(error_nombre)
 
+    # Comprobar que el Telefono sea correcto
     error_telefono = validar_telefono(telefono.value)
+    # Si el Telefono no es correcto, se agrega al listado el error producido
     if error_telefono != None:
         errores.append(error_telefono)
 
+    # Comprobar que el Email sea correcto
     error_email = validar_email(email.value)
+    # Si el Email no es correcto, se agrega al listado el error producido
     if error_email != None:
         errores.append(error_email)
 
+    # Comprobar que la Direccion sea correcta
     error_direccion = validar_direccion(direccion.value)
+    # Si la Direccion no es correcta, se agrega al listado el error producido
     if error_direccion != None:
         errores.append(error_direccion)
 
+    # Si la longitud del listado de errores es mayor a 0
     if len(errores) > 0:
-        # Mostrar errores en un cuadro de diálogo si los campos son incorrectos
+        # Mostrar los errores obtenidos en un cuadro de diálogo
         page.dialog = ft.AlertDialog(
             title=ft.Text("Oops!, ha ocurrido un error"),
             content=ft.Text("\n".join(errores)),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
         )
+        # Abrir el cuadro de diálogo
         page.dialog.open = True
+        # Actualizar la pantalla
         page.update()
 
     # Si los campos son correctos, insertar los datos del cliente en la base de datos llamado a la funcion en el archivo "Querys.py"
@@ -203,17 +306,30 @@ def DatosCliente(page, db, nombre, telefono, email, direccion):
         insertar_datos_clientes(page, db, nombre.value, telefono.value, email.value, direccion.value)
 
 def DatosClienteBuscarReservaModificar(page, db, nombre, telefono):
-    """Valida los campos del formulario y muestra errores si existen."""
+    """Valida los campos del formulario y muestra errores si existen.
+    
+    Args:
+        page (ft.Page): La pagina actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+        nombre (ft.TextField): El campo de nombre.
+        telefono (ft.TextField): El campo de telefono.
+    """
+    # Listado de errores producidos trás las validaciones
     errores = []
 
+    # Comprobar que el Nombre sea correcto
     error_nombre = validar_nombre(nombre.value)
+    # Si el Nombre no es correcto, se agrega al listado el error producido
     if error_nombre != None:        
         errores.append(error_nombre)
 
+    # Comprobar que el Telefono sea correcto
     error_telefono = validar_telefono(telefono.value)
+    # Si el Telefono no es correcto, se agrega al listado el error producido
     if error_telefono != None:
         errores.append(error_telefono)
 
+    # Si la longitud del listado de errores es mayor a 0
     if len(errores) > 0:
         # Mostrar errores en un cuadro de diálogo
         page.dialog = ft.AlertDialog(
@@ -221,39 +337,59 @@ def DatosClienteBuscarReservaModificar(page, db, nombre, telefono):
             content=ft.Text("\n".join(errores)),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
         )
+        # Abrir el cuadro de diálogo
         page.dialog.open = True
+        # Actualizar la pantalla
         page.update()
+    
+    # Si los campos son correctos
     else:
         # Recoger la lista de reservas del cliente
         reservas_cliente_lista = buscar_reservas(db, nombre.value, telefono.value)
 
+        # Si la longitud de la lista de reservas es 0
         if len(reservas_cliente_lista) == 0:
-            # Mostrar un mensaje indicando que no hay reservas
+            # Mostrar un mensaje indicando que no hay reservas asociadas al cliente
             page.dialog = ft.AlertDialog(
                 title=ft.Text("Oops!, ha ocurrido un error"),
                 content=ft.Text("No se han encontrado reservas asociadas con el cliente ingresado. Por favor, inténtelo de nuevo."),
                 actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
             )
+            # Abrir el cuadro de diálogo
             page.dialog.open = True
+        # Si la longitud de la lista de reservas es mayor a 0
         else:
-            # Generar la tabla de reservas
+            # Generar la tabla de reservas con los datos obtenidos
             generar_tabla_reservas_modificar(page, TablaReservas, reservas_cliente_lista)
 
         # Actualizar la página para reflejar los cambios
         page.update()
 
 def DatosClienteBuscarReservaEliminar(page, db, nombre, telefono):
-    """Valida los campos del formulario y muestra errores si existen."""
+    """Valida los campos del formulario y muestra errores si existen.
+    
+    Args:
+        page (ft.Page): La pagina actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+        nombre (ft.TextField): El campo de nombre.
+        telefono (ft.TextField): El campo de telefono.
+    """
+    # Listado de errores producidos trás las validaciones
     errores = []
 
+    # Comprobar que el Nombre sea correcto
     error_nombre = validar_nombre(nombre.value)
+    # Si el Nombre no es correcto, se agrega al listado el error producido
     if error_nombre != None:        
         errores.append(error_nombre)
 
+    # Comprobar que el Telefono sea correcto
     error_telefono = validar_telefono(telefono.value)
+    # Si el Telefono no es correcto, se agrega al listado el error producido
     if error_telefono != None:
         errores.append(error_telefono)
 
+    # Si la longitud del listado de errores es mayor a 0
     if len(errores) > 0:
         # Mostrar errores en un cuadro de diálogo
         page.dialog = ft.AlertDialog(
@@ -261,12 +397,17 @@ def DatosClienteBuscarReservaEliminar(page, db, nombre, telefono):
             content=ft.Text("\n".join(errores)),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
         )
+        # Abrir el cuadro de diálogo
         page.dialog.open = True
+        # Actualizar la pantalla
         page.update()
+    
+    # Si los campos son correctos
     else:
         # Recoger la lista de reservas del cliente
         reservas_cliente_lista = buscar_reservas(db, nombre.value, telefono.value)
 
+        # Si la longitud de la lista de reservas es 0
         if len(reservas_cliente_lista) == 0:
             # Mostrar un mensaje indicando que no hay reservas
             page.dialog = ft.AlertDialog(
@@ -274,7 +415,10 @@ def DatosClienteBuscarReservaEliminar(page, db, nombre, telefono):
                 content=ft.Text("No se han encontrado reservas asociadas con el cliente ingresado. Por favor, inténtelo de nuevo."),
                 actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
             )
+            # Abrir el cuadro de diálogo
             page.dialog.open = True
+
+        # Si la longitud de la lista de reservas es mayor a 0
         else:
             # Generar la tabla de reservas
             generar_tabla_reservas_eliminar(page, TablaReservas2, reservas_cliente_lista)
@@ -284,29 +428,51 @@ def DatosClienteBuscarReservaEliminar(page, db, nombre, telefono):
 
 
 def ReservarMesa(page, db, NumMesa, NumPerson, Hora, Fecha, Notas):
-    """Valida los campos del formulario y muestra errores si existen."""
+    """Valida los campos del formulario y muestra errores si existen.
+    
+    Args:
+        page (ft.Page): La pagina actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+        NumMesa (ft.TextField): El campo de NumMesa.
+        NumPerson (ft.TextField): El campo de NumPerson.
+        Hora (ft.TextField): El campo de Hora.
+        Fecha (ft.TextField): El campo de Fecha.
+        Notas (ft.TextField): El campo de Notas.
+    """
+    # Listado de errores producidos trás las validaciones
     errores = []
 
+    # Comprobar que el NumMesa sea correcto
     error_NumMesa = Validar_num_mesa(NumMesa.value)
+    # Si el NumMesa no es correcto, se agrega al listado el error producido
     if error_NumMesa != None:
         errores.append(error_NumMesa)
-    
+
+    # Comprobar que el NumPerson sea correcto
     error_NumPerson = Validar_num_personas(NumPerson.value)
+    # Si el NumPerson no es correcto, se agrega al listado el error producido
     if error_NumPerson != None:
         errores.append(error_NumPerson)
 
+    # Comprobar que la Hora sea correcta
     error_Hora = ValidarHora(Hora.value)
+    # Si la Hora no es correcta, se agrega al listado el error producido
     if error_Hora != None:
         errores.append(error_Hora)
 
+    # Comprobar que la Fecha sea correcta
     error_Fecha = ValidarFecha(Fecha.value)
+    # Si la Fecha no es correcta, se agrega al listado el error producido
     if error_Fecha != None:
         errores.append(error_Fecha)
 
+    # Comprobar que las Notas sean correctas
     error_Notas = ValidarNotas(Notas.value)
+    # Si las Notas no son correctas, se agrega al listado el error producido
     if error_Notas != None:
         errores.append(error_Notas)
-        
+
+    # Si la longitud del listado de errores es mayor a 0    
     if len(errores) > 0:
         # Mostrar errores en un cuadro de diálogo
         page.dialog = ft.AlertDialog(
@@ -314,31 +480,51 @@ def ReservarMesa(page, db, NumMesa, NumPerson, Hora, Fecha, Notas):
             content=ft.Text("\n".join(errores)),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
         )
+        # Abrir el cuadro de diálogo
         page.dialog.open = True
+        # Actualizar la pantalla
         page.update()
+    
+    # Si los campos son correctos
     else:
+        # Insertar los datos en la base de datos y mostrar un cuadro de diálogo
         insertar_datos_reserva(db, NumMesa.value, NumPerson.value, Hora.value, Fecha.value, Notas.value)
-        # Mostrar errores en un cuadro de diálogo
+        # Mostrar un cuadro de diálogo confirmando la reserva
         page.dialog = ft.AlertDialog(
             title=ft.Text("Reserva Confirmada"),
             content=ft.Text("¡Gracias por reservar mesa en nuestro restaurante! Te esperamos con gratitud y entusiasmo para ofrecerte una experiencia inolvidable. ¡Nos vemos pronto!"),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: cerrar_reserva(page, db))],
         )
+        # Abrir el cuadro de diálogo
         page.dialog.open = True
+        # Actualizar la pantalla
         page.update()
 
 def EliminarReservaCliente(page, db, nombre, telefono, id_fila_eliminar):
-    """Valida los campos del formulario y muestra errores si existen."""
+    """Valida los campos del formulario y muestra errores si existen.
+    
+    Args:
+        page (ft.Page): La pagina actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+        nombre (ft.TextField): El campo de nombre.
+        telefono (ft.TextField): El campo de telefono.
+    """
+    # Listado de errores producidos trás las validaciones
     errores = []
 
+    # Comprobar que el Nombre sea correcto
     error_nombre = validar_nombre(nombre.value)
+    # Si el Nombre no es correcto, se agrega al listado el error producido
     if error_nombre != None:        
         errores.append(error_nombre)
-
+    
+    # Comprobar que el Telefono sea correcto
     error_telefono = validar_telefono(telefono.value)
+    # Si el Telefono no es correcto, se agrega al listado el error producido
     if error_telefono != None:
         errores.append(error_telefono)
 
+    # Si la longitud del listado de errores es mayor a 0
     if len(errores) > 0:
         # Mostrar errores en un cuadro de diálogo
         page.dialog = ft.AlertDialog(
@@ -346,33 +532,51 @@ def EliminarReservaCliente(page, db, nombre, telefono, id_fila_eliminar):
             content=ft.Text("\n".join(errores)),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
         )
+        # Abrir el cuadro de diálogo
         page.dialog.open = True
+        # Actualizar la pantalla
         page.update()
         return
 
+    # Si no se ha seleccionado una reserva
     if id_fila_eliminar is None:
+        # Mostrar un cuadro de diálogo informando de que debe seleccionar una reserva
         page.dialog = ft.AlertDialog(
             title=ft.Text("Seleccione una reserva"),
             content=ft.Text("Por favor, seleccione una reserva para eliminar."),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
         )
+        # Abrir el cuadro de diálogo
         page.dialog.open = True
+        # Actualizar la pantalla
         page.update()
+    
+    # Si se ha seleccionado una reserva
     else:
+        # Mostrar un cuadro de diálogo de confirmación
         if id_fila_eliminar is not None:
             page.dialog = ft.AlertDialog(
                 title=ft.Text("Desea eliminar la reserva?"),
                 content=ft.Text("Esta accion no se puede deshacer."),
                 actions=[
+                    # Botones de confirmación o cancelación. Si se acepta, se llama a la función EliminarReservaConfirmada y se elimina la reserva, si no, se cierra el cuadro de diálogo
                     ft.TextButton("Aceptar", on_click=lambda e: EliminarReservaConfirmada(page, db, id_fila_eliminar)),
                     ft.TextButton("Cancelar", on_click=lambda e: close_dialog(page))
                     ],
             )
+            # Abrir el cuadro de diálogo
             page.dialog.open = True
+            # Actualizar la pantalla
             page.update()
 
 def EliminarReservaConfirmada(page, db, id_fila_eliminar):
-
+    """Elimina una reserva de la base de datos mediante su ID y muestra un cuadro de diálogo de confirmación.
+    
+    Args:
+        page (ft.Page): La pagina actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+        id_fila_eliminar (int): El ID de la reserva a eliminar.
+    """
     # Eliminar la reserva          
     EliminarReservaSelecionada(db, id_fila_eliminar )
 
@@ -382,21 +586,36 @@ def EliminarReservaConfirmada(page, db, id_fila_eliminar):
         content=ft.Text("Su reserva ha sido eliminada con exito."),
         actions=[ft.TextButton("Aceptar", on_click=lambda e: cerrar_reserva(page, db))],
     )
+    # Abrir el cuadro de diálogo
     page.dialog.open = True
+    # Actualizar la pantalla
     page.update()
 
 def IrAModificarReserva(page, db, nombre, telefono, id_fila_eliminar):
-    """Valida los campos del formulario y muestra errores si existen."""
+    """Valida los campos del formulario y muestra errores si existen.
+    
+    Args:
+        page (ft.Page): La pagina actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+        nombre (ft.TextField): El campo de nombre.
+        telefono (ft.TextField): El campo de telefono.
+    """
+    # Listado de errores producidos trás las validaciones
     errores = []
 
+    # Comprobar que el Nombre sea correcto
     error_nombre = validar_nombre(nombre.value)
+    # Si el Nombre no es correcto, se agrega al listado el error producido
     if error_nombre != None:        
         errores.append(error_nombre)
 
+    # Comprobar que el Telefono sea correcto
     error_telefono = validar_telefono(telefono.value)
+    # Si el Telefono no es correcto, se agrega al listado el error producido
     if error_telefono != None:
         errores.append(error_telefono)
 
+    # Si la longitud del listado de errores es mayor a 0
     if len(errores) > 0:
         # Mostrar errores en un cuadro de diálogo
         page.dialog = ft.AlertDialog(
@@ -404,49 +623,81 @@ def IrAModificarReserva(page, db, nombre, telefono, id_fila_eliminar):
             content=ft.Text("\n".join(errores)),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
         )
+        # Abrir el cuadro de diálogo
         page.dialog.open = True
+        # Actualizar la pantalla
         page.update()
         return
     
+    # Si no se ha seleccionado una reserva
     if id_fila_eliminar is None:
+        # Mostrar un cuadro de diálogo informando de que debe seleccionar una reserva
         page.dialog = ft.AlertDialog(
             title=ft.Text("Seleccione una reserva"),
             content=ft.Text("Por favor, seleccione una reserva para modificar."),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
         )
+        # Abrir el cuadro de diálogo
         page.dialog.open = True
+        # Actualizar la pantalla
         page.update()
+
+    # Si se ha seleccionado una reserva
     else:
+        # Limpiar la pantalla
         page.controls.clear()
+        # Actualizar la pantalla
         page.update()
+        # Ir a la vista de modificar reserva
         ModificarReserva(page, db, id_fila_eliminar)
 
 def ValidarReserva(page, db, NumMesa, Fecha, Hora, NumPerson, Notas, id_reserva):
-    """Valida los campos del formulario y muestra errores si existen."""
+    """Valida los campos del formulario y muestra errores si existen.
+    
+    Args:
+        page (ft.Page): La pagina actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+        NumMesa (ft.TextField): El campo de NumMesa.
+        Fecha (ft.TextField): El campo de Fecha.    
+        Hora (ft.TextField): El campo de Hora.
+        NumPerson (ft.TextField): El campo de NumPerson.
+        Notas (ft.TextField): El campo de Notas.
+        id_reserva (int): El ID de la reserva.
+    """
+    # Listado de errores producidos trás las validaciones
     errores = []
 
-    print(NumPerson)
-
+    # Comprobar que el NumMesa sea correcto
     error_NumMesa = Validar_num_mesa(NumMesa)
+    # Si el NumMesa no es correcto, se agrega al listado el error producido
     if error_NumMesa != None:
         errores.append(error_NumMesa)
 
+    # Comprobar que la Fecha sea correcta
     error_Fecha = ValidarFecha(Fecha)
+    # Si la Fecha no es correcta, se agrega al listado el error producido
     if error_Fecha != None:
         errores.append(error_Fecha)
-    
+
+    # Comprobar que la Hora sea correcta
     error_Hora = ValidarHora(Hora)
+    # Si la Hora no es correcta, se agrega al listado el error producido
     if error_Hora != None:
         errores.append(error_Hora)
 
+    # Comprobar que el NumPerson sea correcto
     error_NumPerson = Validar_num_personas(NumPerson)
+    # Si el NumPerson no es correcto, se agrega al listado el error producido
     if error_NumPerson != None:
         errores.append(error_NumPerson)
 
+    # Comprobar que las Notas sean correctas
     error_Notas = ValidarNotas(Notas)
+    # Si las Notas no son correctas, se agrega al listado el error producido
     if error_Notas != None:
         errores.append(error_Notas)
-        
+    
+    # Si la longitud del listado de errores es mayor a 0
     if len(errores) > 0:
         # Mostrar errores en un cuadro de diálogo
         page.dialog = ft.AlertDialog(
@@ -454,9 +705,14 @@ def ValidarReserva(page, db, NumMesa, Fecha, Hora, NumPerson, Notas, id_reserva)
             content=ft.Text("\n".join(errores)),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: close_dialog(page))],
         )
+        # Abrir el cuadro de diálogo
         page.dialog.open = True
+        # Actualizar la pantalla
         page.update()
+    
+    # Si la longitud del listado de errores es 0
     else:
+        # Guardar la reserva en la base de datos
         GuardarReserva(db, NumMesa, Fecha, Hora, NumPerson, Notas, id_reserva)
         # Mostrar errores en un cuadro de diálogo
         page.dialog = ft.AlertDialog(
@@ -464,5 +720,7 @@ def ValidarReserva(page, db, NumMesa, Fecha, Hora, NumPerson, Notas, id_reserva)
             content=ft.Text("¡Su reserva ha sido moficada con exito! Te esperamos con gratitud y entusiasmo para ofrecerte una experiencia inolvidable. ¡Nos vemos pronto!"),
             actions=[ft.TextButton("Aceptar", on_click=lambda e: cerrar_reserva(page, db))],
         )
+        # Abrir el cuadro de diálogo
         page.dialog.open = True
+        # Actualizar la pantalla
         page.update()

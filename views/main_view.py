@@ -13,6 +13,12 @@ primera_view_content = []
 #-------------------------------------------------------
 
 def main(page: ft.Page, db):
+    """Maneja el comportamiento de la primera vista del programa.
+    
+    Args:
+        page (ft.Page): La página actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+    """
     page.title = "Restaurante Sabores Únicos"
     page.route = "/Home"
     page.scroll = ft.ScrollMode.AUTO
@@ -33,7 +39,11 @@ def main(page: ft.Page, db):
     # Funciones para manejar la navegacion entre las vistas
     #-------------------------------------------------------
     def navegar_realizar_reserva(e):
-        """Vacía el contenido de la página actual y carga el contenido de la segunda vista."""
+        """Vacía el contenido de la página actual y carga el contenido de la segunda vista.
+        
+        Args:
+            e (ft.Event): El evento de navegación.
+        """
         # Guardar el contenido de la primera vista
         global primera_view_content
         primera_view_content = page.controls[:]
@@ -49,7 +59,11 @@ def main(page: ft.Page, db):
         realizar_reserva(page, db)
 
     def navegar_editar_reserva(e):
-        """Vacía el contenido de la página actual y carga el contenido de la tercera vista."""
+        """Vacía el contenido de la página actual y carga el contenido de la tercera vista.
+        
+        Args:
+            e (ft.Event): El evento de navegación.
+        """
         # Guardar el contenido de la primera vista
         global primera_view_content
         primera_view_content = page.controls[:]
@@ -65,7 +79,11 @@ def main(page: ft.Page, db):
         editar_reserva(page, db)
 
     def navegar_eliminar_reserva(e):
-        """Vacía el contenido de la página actual y carga el contenido de la cuarta vista."""
+        """Vacía el contenido de la página actual y carga el contenido de la cuarta vista.
+        
+        Args:
+            e (ft.Event): El evento de navegación.
+        """
         # Guardar el contenido de la primera vista
         global primera_view_content
         primera_view_content = page.controls[:]
@@ -226,32 +244,36 @@ def main(page: ft.Page, db):
                     [
                         ft.ElevatedButton("Realizar Reserva", 
                                           on_click=navegar_realizar_reserva, 
-                                          style=ft.ButtonStyle(bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, color={"": "white" , ft.ControlState.HOVERED: "black"}, side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, padding=20, text_style=ft.TextStyle(size=18)))
+                                          style=ft.ButtonStyle(bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, color={"": "white" , ft.ControlState.HOVERED: "black"}, side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, padding=40, text_style=ft.TextStyle(size=26)))
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                    spacing=10,
-                    width=180,
+                    spacing=50,
+                    width=280,
                 ),
                 # Columna para editar la reserva
                 ft.Column(
                     [
-                        ft.ElevatedButton("Editar Reserva", on_click=navegar_editar_reserva, style=ft.ButtonStyle(bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, color={"": "white", ft.ControlState.HOVERED: "black"}, side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, padding=20, text_style=ft.TextStyle(size=18))),
+                        ft.ElevatedButton("Editar Reserva", 
+                                          on_click=navegar_editar_reserva, 
+                                          style=ft.ButtonStyle(bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, color={"": "white", ft.ControlState.HOVERED: "black"}, side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, padding=40, text_style=ft.TextStyle(size=26))),
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                    spacing=10,
-                    width=180,
+                    spacing=50,
+                    width=280,
                 ),
                 # Columna para eliminar la reserva
                 ft.Column(
                     [
-                        ft.ElevatedButton("Eliminar Reserva", on_click=navegar_eliminar_reserva, style=ft.ButtonStyle(bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, color={"": "white", ft.ControlState.HOVERED: "black"}, side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, padding=20, text_style=ft.TextStyle(size=18))),
+                        ft.ElevatedButton("Eliminar Reserva", 
+                                          on_click=navegar_eliminar_reserva, 
+                                          style=ft.ButtonStyle(bgcolor={"": "#000000", ft.ControlState.HOVERED: "#FFC061"}, color={"": "white", ft.ControlState.HOVERED: "black"}, side={"": ft.BorderSide(width=3, color="#FFC061"), ft.ControlState.HOVERED: ft.BorderSide(width=3, color="white")}, padding=40, text_style=ft.TextStyle(size=26))),
                     ],
                     alignment=ft.MainAxisAlignment.CENTER,
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                    spacing=10,
-                    width=180,
+                    spacing=50,
+                    width=280,
                 ),
             ],
             spacing=30,

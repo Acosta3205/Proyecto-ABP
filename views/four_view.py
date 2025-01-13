@@ -50,12 +50,12 @@ TablaReservas2 = ft.DataTable(
 # Generar filas desde las reservas obtenidas
 # ----------------------------------------------
 def generar_tabla_reservas_eliminar(page, tabla, reservas_cliente_lista):
-    """Obtinene una lista que contendrá las consultas asociadas a los datos del cliente insertados en el formulario y rellena la tabla con la información de cada una de ellas.
+    """Obtiene una lista que contendrá las consultas asociadas a los datos del cliente insertados en el formulario y rellena la tabla con la información de cada una de ellas.
         
         Args:
             page (flet.Page): La página actual.
             tabla (ft.DataTable): La tabla que se va a rellenar.
-            reservas_cliente_lista (list): Una lista que contendrá las consultas asociadas a los datos del cliente insertados en el formulario.
+            reservas_cliente_lista (list): Una lista que contendrá las reservas asociadas a los datos del cliente insertados en el formulario, obtenidas de la base de datos mediante la consulta buscar_reservas.
         """
     
     # Limpia las filas actuales
@@ -119,7 +119,11 @@ def seleccionar_fila_eliminar(page, e):
 # -----------------------
 
 def vaciar_tabla(e):
-    """Permite eliminar todos los registros almacenados en la tabla de reservas."""
+    """Permite eliminar todos los registros almacenados en la tabla de reservas.
+    
+    Args:
+        e (ft.Event): El evento de edición de los campos de texto.
+    """
     TablaReservas2.rows.clear()
     TablaReservas2.update()
 

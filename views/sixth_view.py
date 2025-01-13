@@ -5,22 +5,33 @@ import datetime
 import locale
 import flet as ft
 
+#-------------------------------------------------------
+# Importación de las funciones necesarias
+#-------------------------------------------------------
+
 from services.querys import mostrar_mesas
 from services.querys import mostrar_nota_mesa
+from services.querys import CargarDatosReserva
 
 
 def ValidarReserva(page, db, TextMesa, TextFecha, TextHora, TextNumPersonas, TextNota, id_reserva):
     from utils.validators import ValidarReserva
     ValidarReserva(page, db, TextMesa.value, TextFecha.value, TextHora.value, TextNumPersonas.value, TextNota.value, id_reserva)
 
-from services.querys import CargarDatosReserva
-
+# Variable global para almacenar el contenido de las vista
 sixth_view_content = []
 
 def ModificarReserva(page: ft.Page, db, id_reserva):
+    """Maneja el comportamiento de la sexta vista del programa.
+    
+    Args:
+        page (ft.Page): La página actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+    """
     page.title = "Sabores Unicos - Modificar datos de la reserva"
     page.route = "ModificarReserva/ModificarDatosReserva"
 
+    # Recuperar los datos de la reserva pertenecientes al ID recibido
     reserva = CargarDatosReserva(page, db, id_reserva)
 
     # Establece el idioma en español
@@ -28,7 +39,12 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
 
     # Función para volver a la vista anterior
     def back_to_third_view(page: ft.Page, db):
-        """Vacía el contenido de la página actual y carga el contenido de la tercera vista."""
+        """Vacía el contenido de la página actual y carga el contenido de la tercera vista.
+        
+        Args:
+            page (ft.Page): La página actual.
+            db (pymongo.database.Database): La base de datos de MongoDB.
+        """
         # Guardar el contenido de la segunda vista
         global sixth_view_content
         sixth_view_content = page.controls[:]
@@ -47,7 +63,12 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
     # Funciones para manejar la navegación entre las vistas
     
     def back_to_first_view(page: ft.Page, db):
-        """Vacía el contenido de la página actual y carga el contenido de la primera vista."""
+        """Vacía el contenido de la página actual y carga el contenido de la primera vista.
+        
+        Args:
+            page (ft.Page): La página actual.
+            db (pymongo.database.Database): La base de datos de MongoDB.
+        """
         # Guardar el contenido de la segunda vista
         global second_view_content
         second_view_content = page.controls[:]
@@ -65,13 +86,21 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
 
     # Maneja el cambio de fecha
     def handle_change_date(e):
-        """"Formatea la fecha como día de mes de año (02 de Mayo de 2024)."""
+        """"Formatea la fecha como día de mes de año (02 de Mayo de 2024).
+        
+        Args:
+            e (ft.Event): El evento de edición de los campos de texto.
+        """
         TextFecha.value = e.control.value.strftime('%d de %B %Y')
         page.update()
     
     # Maneja el cambio de hora
     def handle_change_time(e):
-        """Formatea la hora como HH:MM (19:25)."""
+        """Formatea la hora como HH:MM (19:25).
+        
+        Args:
+            e (ft.Event): El evento de edición de los campos de texto.
+        """
         TextHora.value = e.control.value.strftime('%H:%M')
         page.update()
     
@@ -454,10 +483,12 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
         width=1920,
     )
 
+
+    # Agregar los contenedores a la página
     page.add(
         ImageHeader,
         Header,
         datos_reserva,
         contact_section,
-        )
+    )
     

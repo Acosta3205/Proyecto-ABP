@@ -18,6 +18,12 @@ second_view_content = []
 # -------------------------------------------------------
 
 def realizar_reserva(page: ft.Page, db):
+    """Maneja el comportamiento de la segunda vista del programa.
+    
+    Args:
+        page (ft.Page): La página actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+    """
     page.title = "Sabores Únicos - Realizar reserva"
     page.route = "/RealizarReserva"
     
@@ -26,7 +32,12 @@ def realizar_reserva(page: ft.Page, db):
     #-------------------------------------------------------
    
     def back_to_first_view(page: ft.Page, db):
-        """Vacía el contenido de la página actual y carga el contenido de la primera vista."""
+        """Vacía el contenido de la página actual y carga el contenido de la primera vista.
+        
+        Args:
+            page (ft.Page): La página actual.
+            db (pymongo.database.Database): La base de datos de MongoDB.
+        """
         # Guardar el contenido de la segunda vista
         global second_view_content
         second_view_content = page.controls[:]

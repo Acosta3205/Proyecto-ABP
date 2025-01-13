@@ -111,7 +111,11 @@ TablaReservas = ft.DataTable(
 
 # Función para vaciar las filas de la tabla
 def vaciar_tabla(e):
-    """Permite eliminar todos los registros almacenados en la tabla de reservas."""
+    """Permite eliminar todos los registros almacenados en la tabla de reservas.
+
+    Args:
+        e (ft.Event): El evento de edición de los campos de texto.
+    """
     TablaReservas.rows.clear()
     TablaReservas.update()
 

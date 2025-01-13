@@ -28,6 +28,12 @@ fifth_view_content = []
 # -------------------------------------------------------
 
 def SelecionarMesaHora(page: ft.Page, db):
+    """Maneja el comportamiento de la quinta vista del programa.
+    
+    Args:
+        page (ft.Page): La página actual.
+        db (pymongo.database.Database): La base de datos de MongoDB.
+    """
     page.title = "Sabores Unicos - Elegir Mesa y Hora de reserva"
     page.route = "RealizarReserva/ElegirMesaHoraDeReserva"
 
@@ -39,7 +45,12 @@ def SelecionarMesaHora(page: ft.Page, db):
     # -------------------------------------------------------
 
     def back_to_second_view(page: ft.Page, db):
-        """Vacía el contenido de la página actual y carga el contenido de la segunda vista."""
+        """Vacía el contenido de la página actual y carga el contenido de la segunda vista.
+        
+        Args:
+            page (ft.Page): La página actual.
+            db (pymongo.database.Database): La base de datos de MongoDB.
+        """
         # Guardar el contenido de la segunda vista
         global fifth_view_content
         fifth_view_content = page.controls[:]
@@ -54,7 +65,12 @@ def SelecionarMesaHora(page: ft.Page, db):
         realizar_reserva(page, db)
     
     def back_to_first_view(page: ft.Page, db):
-        """Vacía el contenido de la página actual y carga el contenido de la primera vista."""
+        """Vacía el contenido de la página actual y carga el contenido de la primera vista.
+        
+        Args:
+            page (ft.Page): La página actual.
+            db (pymongo.database.Database): La base de datos de MongoDB.
+        """
         # Guardar el contenido de la segunda vista
         global second_view_content
         second_view_content = page.controls[:]
@@ -75,7 +91,11 @@ def SelecionarMesaHora(page: ft.Page, db):
     # Función para mostrar la ubicación de la mesa
     # -----------------------------------------------
     def funcionNota(e):
-        """Si hay selecionada una mesa se muestra en el campo nota la ubicación de la mesa"""
+        """Si hay selecionada una mesa se muestra en el campo nota la ubicación de la mesa.
+        
+        Args:
+            e (ft.Event): El evento de edición de los campos de texto.
+        """
         if TextMesa.value:
             # Obtener la nota de la mesa
             ubicacion = mostrar_nota_mesa(db, TextMesa.value)
@@ -91,7 +111,11 @@ def SelecionarMesaHora(page: ft.Page, db):
     # Función para anadir las mesas adecuadas al número de personas
     # ----------------------------------------------------------------
     def añadirMesasListado(e):
-        """Recibe la lista de mesas adecuadas al número de personas y las agrega a la lista desplegable de mesas"""
+        """Recibe la lista de mesas adecuadas al número de personas y las agrega a la lista desplegable de mesas
+        
+        Args:
+            e (ft.Event): El evento de edición de los campos de texto.
+        """
         numMesas = mostrar_mesas(db, TextNumPersonas.value)
 
         # Vaciar el campo de nota
@@ -123,12 +147,22 @@ def SelecionarMesaHora(page: ft.Page, db):
     # Maneja el cambio de fecha
     # ----------------------------
     def handle_change_date(e):
+        """Formatea la fecha como día de mes de año (02 de Mayo de 2024).
+        
+        Args:
+            e (ft.Event): El evento de edición de los campos de texto.
+        """
         TextFecha.value = e.control.value.strftime('%d de %B %Y')
         page.update()
     
     # Maneja el cambio de hora
     # ----------------------------
     def handle_change_time(e):
+        """Formatea la hora como HH:MM (19:25).
+        
+        Args:
+            e (ft.Event): El evento de edición de los campos de texto.
+        """
         TextHora.value = e.control.value.strftime('%H:%M')
         page.update()
 
