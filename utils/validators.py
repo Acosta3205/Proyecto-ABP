@@ -588,6 +588,11 @@ def EliminarReservaConfirmada(page, db, id_fila_eliminar):
     )
     # Abrir el cuadro de diálogo
     page.dialog.open = True
+
+    # Vaciar la tabla
+    TablaReservas2.rows.clear()
+    TablaReservas2.update()
+
     # Actualizar la pantalla
     page.update()
 
@@ -600,6 +605,10 @@ def IrAModificarReserva(page, db, nombre, telefono, id_fila_eliminar):
         nombre (ft.TextField): El campo de nombre.
         telefono (ft.TextField): El campo de telefono.
     """
+    # Vaciar la tabla
+    TablaReservas.rows.clear()
+    TablaReservas.update()
+
     # Listado de errores producidos trás las validaciones
     errores = []
 

@@ -15,9 +15,11 @@ Antes de comenzar, asegúrate de tener instalado lo siguiente:
 
 Configurar la conexión a MongoDB:
 
-Primero, crea una base de datos llamada Restaurante en MongoDB
+Crea una conexión en MongoDB
 
-Luego, accede al archivo config.py que se encuentra en el directorio utils y modifica la variable mongo_uri estableciendo en ella la dirección de tu servidor de MongoDB
+Accede al archivo config.py que se encuentra en el directorio utils y modifica la variable mongo_uri estableciendo en ella la dirección de tu servidor de MongoDB
+
+Al ejecutar la aplicación se encargará automáticamente de crear la base de datos con todas las colecciones necesarias en su interior
 
 Ejecutar la aplicación:
 
