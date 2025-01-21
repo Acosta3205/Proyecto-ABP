@@ -92,6 +92,7 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
             e (ft.Event): El evento de edición de los campos de texto.
         """
         TextFecha.value = e.control.value.strftime('%d de %B %Y')
+        activar_num_personas()
         page.update()
     
     # Maneja el cambio de hora
@@ -102,6 +103,7 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
             e (ft.Event): El evento de edición de los campos de texto.
         """
         TextHora.value = e.control.value.strftime('%H:%M')
+        activar_num_personas()
         page.update()
     
     # Campo de texto para la fecha
@@ -191,6 +193,26 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
             ],
         ),
     )
+
+    # -------------------------------------------------------------
+    # Funciones para manejar los cambios de los campos de texto de Numero de personas y Mesa
+    # ------------------------------------------------------------
+
+    # Función para activar el campo NumPersonas
+    def activar_num_personas():
+        # Vaciar el listado de mesas
+        TextMesa.options.clear()
+
+        # Vaciar el campo NumPersonas
+        TextNumPersonas.value = ""  # Vaciar el campo de texto
+        page.update()  # Actualizar la interfaz
+
+        if TextFecha.value != "" and TextHora.value != "":
+            TextNumPersonas.read_only = False
+        else:
+            TextNumPersonas.read_only = True
+        
+        page.update()
 
     # Header
     ImageHeader = ft.Container(

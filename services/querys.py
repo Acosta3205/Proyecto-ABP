@@ -6,6 +6,7 @@
 from pymongo import DESCENDING
 
 import datetime
+from datetime import datetime, timedelta
 
 def id_nuevo_cliente(db):
     """Función que devuelve el ID del nuevo cliente creado sumando 1 al ID del cliente anterior.
@@ -222,15 +223,22 @@ def esta_mesa_reservada(db, id_mesa, fecha, hora):
     Returns:
         bool: True si la mesa está reservada, False si no lo está.
     """
-    # Buscar reservas activas para la mesa en la fecha y hora indicadas
+    # Convertir la hora proporcionada en un objeto datetime
+    hora_obj = datetime.strptime(hora, "%H:%M")
+    
+    # Generar las dos horas a comprobar (una antes y una después)
+    hora_inicio = (hora_obj - timedelta(hours=1)).strftime("%H:%M")
+    hora_fin = (hora_obj + timedelta(hours=1)).strftime("%H:%M")
+
+    # Buscar reservas para la mesa en la fecha y las horas de interés
     reservas = db.reservas
-    reserva = reservas.find_one({
+    reservas_en_rango = reservas.find({
         "id_mesa": id_mesa,
         "fecha": fecha,
-        "hora": hora,
+        "hora": {"$gte": hora_inicio, "$lte": hora_fin}
     })
     
-    # Si existe una reserva, retornar True, indicando que está reservada
-    if reserva:
+    # Si hay alguna reserva en ese rango de tiempo, retornar True
+    if list(reservas_en_rango):
         return True
     return False

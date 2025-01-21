@@ -153,6 +153,7 @@ def SelecionarMesaHora(page: ft.Page, db):
             e (ft.Event): El evento de edición de los campos de texto.
         """
         TextFecha.value = e.control.value.strftime('%d de %B %Y')
+        activar_num_personas()
         page.update()
     
     # Maneja el cambio de hora
@@ -164,6 +165,7 @@ def SelecionarMesaHora(page: ft.Page, db):
             e (ft.Event): El evento de edición de los campos de texto.
         """
         TextHora.value = e.control.value.strftime('%H:%M')
+        activar_num_personas()
         page.update()
 
     # -------------------------------------------------------------------------
@@ -197,7 +199,7 @@ def SelecionarMesaHora(page: ft.Page, db):
                             read_only=True,
                             width=325 * 4,
                         )
-    
+        
     # Campo de texto para la hora
     # -------------------------------
     TextHora = ft.TextField(
@@ -211,8 +213,7 @@ def SelecionarMesaHora(page: ft.Page, db):
                     read_only=True,
                     width=325 * 4,
                 )
-
-    
+        
     # Campo de texto para el numero de personas
     # --------------------------------------------
     TextNumPersonas = ft.TextField(
@@ -223,6 +224,7 @@ def SelecionarMesaHora(page: ft.Page, db):
                         label_style=ft.TextStyle(color="black", weight=ft.FontWeight.W_900),
                         border=ft.InputBorder.NONE, 
                         filled=True,
+                        read_only=True,
                 )
     
     # Campo de texto para la nota
@@ -244,6 +246,22 @@ def SelecionarMesaHora(page: ft.Page, db):
     TextNumPersonas.on_change = añadirMesasListado
     TextMesa.on_change = funcionNota
     
+    # Función para activar el campo NumPersonas
+    def activar_num_personas():
+        # Vaciar el listado de mesas
+        TextMesa.options.clear()
+        
+        # Vaciar el campo NumPersonas
+        TextNumPersonas.value = ""  # Vaciar el campo de texto
+        page.update()  # Actualizar la interfaz
+
+        if TextFecha.value != "" and TextHora.value != "":
+            TextNumPersonas.read_only = False
+        else:
+            TextNumPersonas.read_only = True
+        
+        page.update()
+
     # -------------------------------------------------------------------------
     # Button para el manejo de los datos de reserva y navegacion de vistas
     # --------------------------------------------------------------------------    
