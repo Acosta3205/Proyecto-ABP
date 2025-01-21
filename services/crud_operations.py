@@ -213,7 +213,7 @@ def insertar_datos_reserva(db, NumMesa, NumPerson, Hora, Fecha, Notas):
   id_reserva = id_nueva_reserva(db) + 1
   try:
     # Insertar los datos en la colección "Reservas"
-    db.reservas.insert_one({"id": id_reserva, "id_cliente": cliente_actual[0], "id_mesa": NumMesa, "fecha": Fecha, "hora": Hora, "num_personas": NumPerson, "estado": "Confirmada", "notas": Notas})
+    db.reservas.insert_one({"id": id_reserva, "id_cliente": cliente_actual[0], "id_mesa": int(NumMesa), "fecha": Fecha, "hora": Hora, "num_personas": NumPerson, "estado": "Confirmada", "notas": Notas})
     print("Los datos se han insertado correctamente en la base de datos.")
 
   # En caso de error, mostrar por la consola el error producido

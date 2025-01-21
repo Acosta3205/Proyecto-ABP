@@ -5,7 +5,7 @@
 # Importar la libreria pymongo
 from pymongo import DESCENDING
 
-from views.four_view import id_fila_eliminar
+import datetime
 
 def id_nuevo_cliente(db):
     """Función que devuelve el ID del nuevo cliente creado sumando 1 al ID del cliente anterior.
@@ -54,7 +54,7 @@ def id_nueva_reserva(db):
         return 0
 
 # Función que comprueba las mesas adecuadas para el número de comensales
-def mostrar_mesas(db, num_comensales):
+def mostrar_mesas(db, num_comensales, fecha, hora):
     """Función que devuelve una lista con las mesas adecuadas para el número de comensales.
 
     Args:
@@ -73,11 +73,15 @@ def mostrar_mesas(db, num_comensales):
     # Buscar las mesas donde la capacidad sea mayor o igual que num_comensales
     mesas_adecuadas = mesas.find({"capacidad": {"$gte": int(num_comensales)}})
 
-    # Obtener el número de mesa de cada una de las mesas adecuadas
-    lista_mesas_adecuadas = [mesa["numero_mesa"] for mesa in mesas_adecuadas]
+    # Lista para guardar las mesas disponibles
+    mesas_disponibles = []
+    
+    for mesa in mesas_adecuadas:
+        if not esta_mesa_reservada(db, mesa["id"], fecha, hora):
+            mesas_disponibles.append(mesa["numero_mesa"])
 
     # Devolver la lista de mesas adecuadas
-    return lista_mesas_adecuadas
+    return mesas_disponibles
 
 def mostrar_nota_mesa(db, num_mesa):
     """Función que devuelve la nota de una mesa.
@@ -205,3 +209,28 @@ def CargarDatosReserva(page, db, id_reserva):
 
     # Devuelve la reserva en un diccionario
     return reserva
+
+def esta_mesa_reservada(db, id_mesa, fecha, hora):
+    """Función que verifica si una mesa está reservada en una fecha y hora determinadas.
+
+    Args:
+        db (pymongo.database.Database): La base de datos de MongoDB.
+        id_mesa (int): El id de la mesa que se quiere comprobar.
+        fecha (str): La fecha en formato 'YYYY-MM-DD' a verificar.
+        hora (str): La hora en formato 'HH:MM' a verificar.
+
+    Returns:
+        bool: True si la mesa está reservada, False si no lo está.
+    """
+    # Buscar reservas activas para la mesa en la fecha y hora indicadas
+    reservas = db.reservas
+    reserva = reservas.find_one({
+        "id_mesa": id_mesa,
+        "fecha": fecha,
+        "hora": hora,
+    })
+    
+    # Si existe una reserva, retornar True, indicando que está reservada
+    if reserva:
+        return True
+    return False
