@@ -234,7 +234,7 @@ def GuardarReserva(db, NumMesa, Fecha, Hora, NumPerson, Notas, id_reserva):
   """
   try:
     # Actualizar los datos en la colección "Reservas"
-    db.reservas.update_one({"id": id_reserva}, {"$set": {"id_mesa": NumMesa, "fecha": Fecha, "hora": Hora, "num_personas": NumPerson, "estado": "Confirmada", "notas": Notas}})
+    db.reservas.update_one({"id": id_reserva}, {"$set": {"id_mesa": int(NumMesa), "fecha": Fecha, "hora": Hora, "num_personas": NumPerson, "estado": "Confirmada", "notas": Notas}})
     print("Los datos se han actualizado correctamente en la base de datos.")
 
   # En caso de error, mostrar por la consola el error producido

@@ -327,7 +327,7 @@ def ModificarReserva(page: ft.Page, db, id_reserva):
     
     def añadirMesasListado(e):
         """Recibe la lista de mesas adecuadas al número de personas y las agrega a la lista desplegable de mesas"""
-        numMesas = mostrar_mesas(db, TextNumPersonas.value)
+        numMesas = mostrar_mesas(db, TextNumPersonas.value, TextFecha.value, TextHora.value)
 
         # Vaciar el campo de nota
         TextNota.value = ""

@@ -116,7 +116,7 @@ def SelecionarMesaHora(page: ft.Page, db):
         Args:
             e (ft.Event): El evento de edición de los campos de texto.
         """
-        numMesas = mostrar_mesas(db, TextNumPersonas.value)
+        numMesas = mostrar_mesas(db, TextNumPersonas.value, TextFecha.value, TextHora.value)
 
         # Vaciar el campo de nota
         TextNota.value = ""
